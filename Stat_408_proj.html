@@ -1,0 +1,2526 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>PIRUS</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Stat_408_proj_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Stat_408_proj_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="Stat_408_proj_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Stat_408_proj_files/libs/quarto-html/popper.min.js"></script>
+<script src="Stat_408_proj_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Stat_408_proj_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Stat_408_proj_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Stat_408_proj_files/libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Stat_408_proj_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Stat_408_proj_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Stat_408_proj_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">PIRUS</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="political-violent-extremism-regression-project" class="level2">
+<h2 class="anchored" data-anchor-id="political-violent-extremism-regression-project">Political Violent Extremism Regression Project</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.4     ✔ readr     2.1.5
+✔ forcats   1.0.0     ✔ stringr   1.5.2
+✔ ggplot2   4.0.0     ✔ tibble    3.3.0
+✔ lubridate 1.9.4     ✔ tidyr     1.3.1
+✔ purrr     1.1.0     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(regclass)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: bestglm
+Loading required package: leaps
+Loading required package: VGAM
+Loading required package: stats4
+Loading required package: splines
+Loading required package: rpart
+Loading required package: randomForest
+randomForest 4.7-1.2
+Type rfNews() to see new features/changes/bug fixes.
+
+Attaching package: 'randomForest'
+
+The following object is masked from 'package:dplyr':
+
+    combine
+
+The following object is masked from 'package:ggplot2':
+
+    margin
+
+Important regclass change from 1.3:
+All functions that had a . in the name now have an _
+all.correlations -&gt; all_correlations, cor.demo -&gt; cor_demo, etc.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: zoo
+
+Attaching package: 'zoo'
+
+The following objects are masked from 'package:base':
+
+    as.Date, as.Date.numeric
+
+
+Attaching package: 'lmtest'
+
+The following object is masked from 'package:VGAM':
+
+    lrtest</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ResourceSelection)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>ResourceSelection 0.3-6      2023-06-27</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pirus <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"pirus_encoded.csv"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(pirus)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 3,526
+Columns: 124
+$ Subject_ID                                  &lt;int&gt; 10590, 1001, 10893, 10945,…
+$ Loc_Plot_State1                             &lt;chr&gt; "District of Columbia", "C…
+$ Loc_Plot_City1                              &lt;chr&gt; "Washington", "San Francis…
+$ Loc_Plot_State2                             &lt;chr&gt; NA, NA, "District of Colum…
+$ Loc_Plot_City2                              &lt;chr&gt; NA, NA, "Washington", NA, …
+$ Year_Exposure                               &lt;int&gt; 2022, 2001, 2022, 2022, 20…
+$ Plot_Target1                                &lt;chr&gt; "Government (General)", "N…
+$ Plot_Target2                                &lt;chr&gt; "Police", NA, "Private", N…
+$ Plot_Target3                                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Attack_Preparation                          &lt;chr&gt; "Moderate", "No Plot", "Mo…
+$ Changing_Target                             &lt;chr&gt; "No", "No Plot", "No", "No…
+$ Anticp_Fatals_Targ                          &lt;chr&gt; "None", "No Plot", "1 to 2…
+$ Internet_Use_Plot                           &lt;chr&gt; "Yes", "Not Applicable", "…
+$ Extent_Plot                                 &lt;chr&gt; "Successful", "No plot", "…
+$ Violent                                     &lt;chr&gt; "Yes", "No", "Yes", "Yes",…
+$ Primary_Event_Mass_Casualty_Incident        &lt;chr&gt; "No", "Not Applicable", "Y…
+$ Primary_Event_Mass_Casualty_Incident_Type   &lt;chr&gt; "Not Applicable", "Not App…
+$ Primary_Event_Mass_Casualty_Incident_Killed &lt;chr&gt; "Not Applicable", "Not App…
+$ Foreign_Fighter                             &lt;chr&gt; "No", "Yes", "No", "No", "…
+$ Criminal_Severity                           &lt;chr&gt; "Personal Violence", "Cons…
+$ Criminal_Charges                            &lt;chr&gt; "Felony", "Felony", "Felon…
+$ Indict_Arrest                               &lt;chr&gt; "Arrested, indict NA", "In…
+$ Current_Status                              &lt;chr&gt; "Arrested", "Convicted", "…
+$ Group_Membership                            &lt;chr&gt; "Extremist Group", "Extrem…
+$ Actively_Recruited                          &lt;chr&gt; "Unknown", "No", "Unknown"…
+$ Recruiter1                                  &lt;chr&gt; "Unknown", "Not recruited"…
+$ Recruiter2                                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Recruiter3                                  &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Actively_Connect                            &lt;chr&gt; "Unknown", "Yes (post)", "…
+$ Group_Competition                           &lt;chr&gt; "No", "Unknown", "No", "No…
+$ Role_Group                                  &lt;chr&gt; "Follower", "Follower", "F…
+$ Length_Group                                &lt;chr&gt; "Unknown", "1-2 Years", "U…
+$ Clique                                      &lt;chr&gt; "No", "No", "No", "No", "N…
+$ Internet_Radicalization                     &lt;chr&gt; "Some role", "Some role", …
+$ Media_Radicalization                        &lt;chr&gt; "No role", "Some role", "S…
+$ Social_Media                                &lt;chr&gt; "Primary means", "Not appl…
+$ Social_Media_Frequency                      &lt;chr&gt; "Unknown", "Not applicable…
+$ Social_Media_Platform1                      &lt;chr&gt; "Facebook", "None", "Dark …
+$ Social_Media_Platform2                      &lt;chr&gt; "Instagram", NA, NA, NA, N…
+$ Social_Media_Platform3                      &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Social_Media_Platform4                      &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Social_Media_Platform5                      &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Social_Media_Activities1                    &lt;chr&gt; "Unknown", "Not applicable…
+$ Social_Media_Activities2                    &lt;chr&gt; NA, NA, "Dissemination", "…
+$ Social_Media_Activities3                    &lt;chr&gt; NA, NA, "Dialogue", "Estab…
+$ Social_Media_Activities4                    &lt;chr&gt; NA, NA, "Establish relatio…
+$ Social_Media_Activities5                    &lt;chr&gt; NA, NA, "Domestic attack p…
+$ Social_Media_Activities6                    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Social_Media_Activities7                    &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Radicalization_Islamist                     &lt;chr&gt; "No", "Yes", "No", "No", "…
+$ Radicalization_Far_Right                    &lt;chr&gt; "Yes", "No", "Yes", "Yes",…
+$ Radicalization_Far_Left                     &lt;chr&gt; "No", "No", "No", "No", "N…
+$ Radicalization_Single_Issue                 &lt;chr&gt; "No", "No", "No", "No", "N…
+$ Ideological_Sub_Category1                   &lt;chr&gt; "Militia/gun rights", "Isl…
+$ Ideological_Sub_Category2                   &lt;chr&gt; "Xenophobia", NA, "Soverei…
+$ Ideological_Sub_Category3                   &lt;chr&gt; "Pro-Trump", NA, "Anti-LGB…
+$ Loc_Habitation_State1                       &lt;chr&gt; "Florida", "California", "…
+$ Loc_Habitation_City1                        &lt;chr&gt; "Zephyrhills", "San Franci…
+$ Loc_Habitation_State2                       &lt;chr&gt; NA, NA, NA, "California", …
+$ Loc_Habitation_City2                        &lt;chr&gt; NA, NA, NA, "Temecula", NA…
+$ Itinerant                                   &lt;chr&gt; "No", "Yes", "No", "No", "…
+$ External_Rad                                &lt;chr&gt; "No", "Yes", "No", "No", "…
+$ Radical_Behaviors                           &lt;chr&gt; "Non-Violent Plot", "Viole…
+$ Radical_Beliefs                             &lt;chr&gt; "Exposed", "Committed", "S…
+$ US_Govt_Leader                              &lt;chr&gt; "Yes", "Unknown", "No", "N…
+$ Foreign_Govt_Leader                         &lt;chr&gt; "No", "Unknown", "No", "No…
+$ Event_Influence1                            &lt;chr&gt; "2020 US Election", "None"…
+$ Event_Influence2                            &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Event_Influence3                            &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Event_Influence4                            &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Radicalization_Sequence                     &lt;chr&gt; "Belief-first", "Belief-fi…
+$ Radicalization_Place                        &lt;chr&gt; "No", "Place of worship", …
+$ Prison_Radicalize                           &lt;chr&gt; "Not applicable", "Not app…
+$ Broad_Ethnicity                             &lt;chr&gt; "White", "White", "White",…
+$ Age                                         &lt;int&gt; 39, 20, 21, 22, 33, 61, 28…
+$ Marital_Status                              &lt;chr&gt; "Unknown", "Single (NM)", …
+$ Children                                    &lt;int&gt; 0, 0, 0, 0, 1, 0, 0, 0, 0,…
+$ Sex                                         &lt;chr&gt; "Male", "Male", "Male", "M…
+$ Religious_Background                        &lt;chr&gt; "Unknown", "Catholic", "Un…
+$ Convert                                     &lt;chr&gt; "No", "Before", "No", "No"…
+$ Reawakening                                 &lt;chr&gt; "Unknown", "No", "No", "No…
+$ Citizenship                                 &lt;chr&gt; "United States of America"…
+$ Residency_Status                            &lt;chr&gt; "Born citizen", "Born citi…
+$ Nativity                                    &lt;chr&gt; "United States of America"…
+$ Time_US_Months                              &lt;int&gt; 468, 240, 252, 264, 396, 7…
+$ Immigrant_Generation                        &lt;chr&gt; "3+ generations", "3+ gene…
+$ Immigrant_Source                            &lt;chr&gt; "-88", "-88", "-88", "-88"…
+$ Education                                   &lt;chr&gt; "Unknown", "HS Diploma", "…
+$ Student                                     &lt;chr&gt; "No", "Yes", "No", "Yes", …
+$ Employment_Status                           &lt;chr&gt; "Self-employed", "Unemploy…
+$ Work_History                                &lt;chr&gt; "Regularly Employed", "Unk…
+$ Military                                    &lt;chr&gt; "Yes", "No", "No", "No", "…
+$ Military_Status_Arrest                      &lt;chr&gt; "Inactive", "Never Served"…
+$ Foreign_Military                            &lt;chr&gt; "No", "No", "No", "No", "N…
+$ Social_Stratum_Childhood                    &lt;chr&gt; "Unknown", "High", "Unknow…
+$ Social_Stratum_Adulthood                    &lt;chr&gt; "Middle", "Unknown", "Low"…
+$ Abuse_Child                                 &lt;chr&gt; "No", "No", "No", "No", "N…
+$ Abuse_Adult                                 &lt;chr&gt; "No", "No", "No", "No", "N…
+$ Abuse_Type1                                 &lt;chr&gt; "No Abuse", "No Abuse", "N…
+$ Abuse_Type2                                 &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Abuse_Type3                                 &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Psychological                               &lt;chr&gt; "None", "None", "None", "N…
+$ Alcohol_Drug                                &lt;chr&gt; "No", "No", "No", "No", "N…
+$ Radical_Friend                              &lt;chr&gt; "Violent", "Violent", "Unk…
+$ Radical_Family                              &lt;chr&gt; "No", "No", "Unknown", "Un…
+$ Radical_Signif_Other                        &lt;chr&gt; "No", "No", "Unknown", "Un…
+$ Previous_Criminal_Activity                  &lt;chr&gt; "None", "None", "None", "N…
+$ Previous_Criminal_Activity_Type1            &lt;chr&gt; "No crime", "No crime", "N…
+$ Previous_Criminal_Activity_Type2            &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Previous_Criminal_Activity_Type3            &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Previous_Criminal_Activity_Age              &lt;chr&gt; "No crime", "No crime", "N…
+$ Gang                                        &lt;chr&gt; "No", "No", "No", "No", "N…
+$ Gang_Age_Joined                             &lt;chr&gt; "No gang", "No gang", "No …
+$ Trauma                                      &lt;chr&gt; "No", "Unknown", "No", "No…
+$ Other_Ideologies                            &lt;chr&gt; "No", "No", "No", "No", "N…
+$ Angry_US                                    &lt;chr&gt; "Yes", "Yes", "Yes", "No",…
+$ Group_Grievance                             &lt;chr&gt; "No", "Unknown", "No", "No…
+$ Component_ID                                &lt;int&gt; 65, 566, 1, 1, 65, 65, 65,…
+$ Component_Density                           &lt;dbl&gt; 0.47619048, -88.00000000, …
+$ Lone_Offender                               &lt;chr&gt; "No", "Yes", "No", "No", "…
+$ Degree_Centrality                           &lt;int&gt; 4, 0, 1, 4, 3, 3, 5, 0, 0,…
+$ Betweenness_Centrality                      &lt;dbl&gt; 3.333333e-01, 0.000000e+00…
+$ Closeness_Centrality                        &lt;dbl&gt; 0.7500000, 0.0000000, 0.11…
+$ Rad_Duration                                &lt;chr&gt; "Unknown", "Medium", "Medi…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># When reading in my encoded file, it reads all the factors in as character vectors.</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>pirus_fct <span class="ot">&lt;-</span> pirus <span class="sc">%&gt;%</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="sc">-</span><span class="fu">c</span>(Subject_ID, Loc_Plot_State1<span class="sc">:</span>Year_Exposure, Loc_Habitation_State1<span class="sc">:</span>Loc_Habitation_City2, Age, Children, Citizenship, Nativity, Immigrant_Source, Component_ID, Component_Density, Degree_Centrality<span class="sc">:</span>Closeness_Centrality), as.factor))</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(pirus_fct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 3,526
+Columns: 124
+$ Subject_ID                                  &lt;int&gt; 10590, 1001, 10893, 10945,…
+$ Loc_Plot_State1                             &lt;chr&gt; "District of Columbia", "C…
+$ Loc_Plot_City1                              &lt;chr&gt; "Washington", "San Francis…
+$ Loc_Plot_State2                             &lt;chr&gt; NA, NA, "District of Colum…
+$ Loc_Plot_City2                              &lt;chr&gt; NA, NA, "Washington", NA, …
+$ Year_Exposure                               &lt;int&gt; 2022, 2001, 2022, 2022, 20…
+$ Plot_Target1                                &lt;fct&gt; Government (General), No P…
+$ Plot_Target2                                &lt;fct&gt; Police, NA, Private, NA, N…
+$ Plot_Target3                                &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Attack_Preparation                          &lt;fct&gt; Moderate, No Plot, Moderat…
+$ Changing_Target                             &lt;fct&gt; No, No Plot, No, No, No, N…
+$ Anticp_Fatals_Targ                          &lt;fct&gt; None, No Plot, 1 to 20, No…
+$ Internet_Use_Plot                           &lt;fct&gt; Yes, Not Applicable, Yes, …
+$ Extent_Plot                                 &lt;fct&gt; Successful, No plot, Attem…
+$ Violent                                     &lt;fct&gt; Yes, No, Yes, Yes, Yes, Ye…
+$ Primary_Event_Mass_Casualty_Incident        &lt;fct&gt; No, Not Applicable, Yes, N…
+$ Primary_Event_Mass_Casualty_Incident_Type   &lt;fct&gt; Not Applicable, Not Applic…
+$ Primary_Event_Mass_Casualty_Incident_Killed &lt;fct&gt; Not Applicable, Not Applic…
+$ Foreign_Fighter                             &lt;fct&gt; No, Yes, No, No, No, No, N…
+$ Criminal_Severity                           &lt;fct&gt; Personal Violence, Conspir…
+$ Criminal_Charges                            &lt;fct&gt; Felony, Felony, Felony, Un…
+$ Indict_Arrest                               &lt;fct&gt; "Arrested, indict NA", "In…
+$ Current_Status                              &lt;fct&gt; Arrested, Convicted, Arres…
+$ Group_Membership                            &lt;fct&gt; Extremist Group, Extremist…
+$ Actively_Recruited                          &lt;fct&gt; Unknown, No, Unknown, No, …
+$ Recruiter1                                  &lt;fct&gt; Unknown, Not recruited, Un…
+$ Recruiter2                                  &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Recruiter3                                  &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Actively_Connect                            &lt;fct&gt; Unknown, Yes (post), Unkno…
+$ Group_Competition                           &lt;fct&gt; No, Unknown, No, No, Unkno…
+$ Role_Group                                  &lt;fct&gt; Follower, Follower, Follow…
+$ Length_Group                                &lt;fct&gt; Unknown, 1-2 Years, Unknow…
+$ Clique                                      &lt;fct&gt; No, No, No, No, No, No, No…
+$ Internet_Radicalization                     &lt;fct&gt; Some role, Some role, Some…
+$ Media_Radicalization                        &lt;fct&gt; No role, Some role, Some r…
+$ Social_Media                                &lt;fct&gt; Primary means, Not applica…
+$ Social_Media_Frequency                      &lt;fct&gt; Unknown, Not applicable, O…
+$ Social_Media_Platform1                      &lt;fct&gt; Facebook, None, Dark web, …
+$ Social_Media_Platform2                      &lt;fct&gt; Instagram, NA, NA, NA, NA,…
+$ Social_Media_Platform3                      &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Social_Media_Platform4                      &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Social_Media_Platform5                      &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Social_Media_Activities1                    &lt;fct&gt; Unknown, Not applicable, C…
+$ Social_Media_Activities2                    &lt;fct&gt; NA, NA, Dissemination, Dis…
+$ Social_Media_Activities3                    &lt;fct&gt; NA, NA, Dialogue, Establis…
+$ Social_Media_Activities4                    &lt;fct&gt; NA, NA, Establish relation…
+$ Social_Media_Activities5                    &lt;fct&gt; NA, NA, Domestic attack pl…
+$ Social_Media_Activities6                    &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Social_Media_Activities7                    &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Radicalization_Islamist                     &lt;fct&gt; No, Yes, No, No, No, No, N…
+$ Radicalization_Far_Right                    &lt;fct&gt; Yes, No, Yes, Yes, Yes, Ye…
+$ Radicalization_Far_Left                     &lt;fct&gt; No, No, No, No, No, No, No…
+$ Radicalization_Single_Issue                 &lt;fct&gt; No, No, No, No, No, No, No…
+$ Ideological_Sub_Category1                   &lt;fct&gt; Militia/gun rights, Islami…
+$ Ideological_Sub_Category2                   &lt;fct&gt; Xenophobia, NA, Sovereign …
+$ Ideological_Sub_Category3                   &lt;fct&gt; Pro-Trump, NA, Anti-LGBTQ,…
+$ Loc_Habitation_State1                       &lt;chr&gt; "Florida", "California", "…
+$ Loc_Habitation_City1                        &lt;chr&gt; "Zephyrhills", "San Franci…
+$ Loc_Habitation_State2                       &lt;chr&gt; NA, NA, NA, "California", …
+$ Loc_Habitation_City2                        &lt;chr&gt; NA, NA, NA, "Temecula", NA…
+$ Itinerant                                   &lt;fct&gt; No, Yes, No, No, No, No, N…
+$ External_Rad                                &lt;fct&gt; No, Yes, No, No, No, No, N…
+$ Radical_Behaviors                           &lt;fct&gt; Non-Violent Plot, Violent …
+$ Radical_Beliefs                             &lt;fct&gt; Exposed, Committed, Shared…
+$ US_Govt_Leader                              &lt;fct&gt; Yes, Unknown, No, No, Yes,…
+$ Foreign_Govt_Leader                         &lt;fct&gt; No, Unknown, No, No, No, N…
+$ Event_Influence1                            &lt;fct&gt; 2020 US Election, None, No…
+$ Event_Influence2                            &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Event_Influence3                            &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Event_Influence4                            &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Radicalization_Sequence                     &lt;fct&gt; Belief-first, Belief-first…
+$ Radicalization_Place                        &lt;fct&gt; No, Place of worship, No, …
+$ Prison_Radicalize                           &lt;fct&gt; Not applicable, Not applic…
+$ Broad_Ethnicity                             &lt;fct&gt; White, White, White, White…
+$ Age                                         &lt;int&gt; 39, 20, 21, 22, 33, 61, 28…
+$ Marital_Status                              &lt;fct&gt; Unknown, Single (NM), Sing…
+$ Children                                    &lt;int&gt; 0, 0, 0, 0, 1, 0, 0, 0, 0,…
+$ Sex                                         &lt;fct&gt; Male, Male, Male, Male, Ma…
+$ Religious_Background                        &lt;fct&gt; Unknown, Catholic, Unknown…
+$ Convert                                     &lt;fct&gt; No, Before, No, No, No, No…
+$ Reawakening                                 &lt;fct&gt; Unknown, No, No, No, No, N…
+$ Citizenship                                 &lt;chr&gt; "United States of America"…
+$ Residency_Status                            &lt;fct&gt; Born citizen, Born citizen…
+$ Nativity                                    &lt;chr&gt; "United States of America"…
+$ Time_US_Months                              &lt;fct&gt; 468, 240, 252, 264, 396, 7…
+$ Immigrant_Generation                        &lt;fct&gt; 3+ generations, 3+ generat…
+$ Immigrant_Source                            &lt;chr&gt; "-88", "-88", "-88", "-88"…
+$ Education                                   &lt;fct&gt; Unknown, HS Diploma, Unkno…
+$ Student                                     &lt;fct&gt; No, Yes, No, Yes, No, No, …
+$ Employment_Status                           &lt;fct&gt; Self-employed, Unemployed,…
+$ Work_History                                &lt;fct&gt; Regularly Employed, Unknow…
+$ Military                                    &lt;fct&gt; Yes, No, No, No, No, Yes, …
+$ Military_Status_Arrest                      &lt;fct&gt; Inactive, Never Served, Ne…
+$ Foreign_Military                            &lt;fct&gt; No, No, No, No, No, No, No…
+$ Social_Stratum_Childhood                    &lt;fct&gt; Unknown, High, Unknown, Mi…
+$ Social_Stratum_Adulthood                    &lt;fct&gt; Middle, Unknown, Low, Midd…
+$ Abuse_Child                                 &lt;fct&gt; No, No, No, No, No, No, No…
+$ Abuse_Adult                                 &lt;fct&gt; No, No, No, No, No, No, No…
+$ Abuse_Type1                                 &lt;fct&gt; No Abuse, No Abuse, No Abu…
+$ Abuse_Type2                                 &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Abuse_Type3                                 &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Psychological                               &lt;fct&gt; None, None, None, None, No…
+$ Alcohol_Drug                                &lt;fct&gt; No, No, No, No, No, No, Ye…
+$ Radical_Friend                              &lt;fct&gt; Violent, Violent, Unknown,…
+$ Radical_Family                              &lt;fct&gt; No, No, Unknown, Unknown, …
+$ Radical_Signif_Other                        &lt;fct&gt; No, No, Unknown, Unknown, …
+$ Previous_Criminal_Activity                  &lt;fct&gt; None, None, None, None, Un…
+$ Previous_Criminal_Activity_Type1            &lt;fct&gt; No crime, No crime, No cri…
+$ Previous_Criminal_Activity_Type2            &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Previous_Criminal_Activity_Type3            &lt;fct&gt; NA, NA, NA, NA, NA, NA, NA…
+$ Previous_Criminal_Activity_Age              &lt;fct&gt; No crime, No crime, No cri…
+$ Gang                                        &lt;fct&gt; No, No, No, No, No, No, No…
+$ Gang_Age_Joined                             &lt;fct&gt; No gang, No gang, No gang,…
+$ Trauma                                      &lt;fct&gt; No, Unknown, No, No, Unkno…
+$ Other_Ideologies                            &lt;fct&gt; No, No, No, No, No, No, No…
+$ Angry_US                                    &lt;fct&gt; Yes, Yes, Yes, No, Yes, Ye…
+$ Group_Grievance                             &lt;fct&gt; No, Unknown, No, No, Unkno…
+$ Component_ID                                &lt;int&gt; 65, 566, 1, 1, 65, 65, 65,…
+$ Component_Density                           &lt;dbl&gt; 0.47619048, -88.00000000, …
+$ Lone_Offender                               &lt;fct&gt; No, Yes, No, No, No, No, N…
+$ Degree_Centrality                           &lt;int&gt; 4, 0, 1, 4, 3, 3, 5, 0, 0,…
+$ Betweenness_Centrality                      &lt;dbl&gt; 3.333333e-01, 0.000000e+00…
+$ Closeness_Centrality                        &lt;dbl&gt; 0.7500000, 0.0000000, 0.11…
+$ Rad_Duration                                &lt;fct&gt; Unknown, Medium, Medium, U…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filtering and cleaning this dataset is going to be an absolute headache. In order to make this more readable, I'm going to remove "groups" of columns at a time.</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>political_violent_extremism <span class="ot">&lt;-</span> pirus <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Radicalization_Islamist <span class="sc">!=</span> <span class="st">"Yes"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Ideological_Sub_Category1 <span class="sc">!=</span> <span class="st">"Christian Identity"</span> <span class="sc">&amp;</span> Ideological_Sub_Category1 <span class="sc">!=</span> <span class="st">"Islamist"</span> <span class="sc">&amp;</span> Ideological_Sub_Category1 <span class="sc">!=</span> <span class="st">"Jewish Defense Lg."</span>) <span class="sc">%&gt;%</span> <span class="co"># Because I'm just focusing on politically-motivated extremism and not religiously-motivated extremism, I'm removing people with religious ideological sub categories.</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(Subject_ID, Loc_Plot_State1<span class="sc">:</span>Loc_Plot_City2, Plot_Target1<span class="sc">:</span>Extent_Plot, Primary_Event_Mass_Casualty_Incident<span class="sc">:</span>Foreign_Fighter, Component_ID, Component_Density, Degree_Centrality<span class="sc">:</span>Closeness_Centrality)) <span class="sc">%&gt;%</span> </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Violent =</span> <span class="fu">case_when</span>(</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Have to make Violent a binomial variable for a logistic regression</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    Violent <span class="sc">==</span> <span class="st">"Yes"</span> <span class="sc">~</span> <span class="dv">1</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    Violent <span class="sc">==</span> <span class="st">"No"</span> <span class="sc">~</span> <span class="dv">0</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  ))<span class="co"># This removes all of the variables related to plots and the social network nodes of an extremist</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This should leave me with variables that could be valid predictors of whether or not a political extremist in the United States will be violent. Now, I’m going to glimpse at the dataset to see if there are any other variables that could cause some problems for my logistic regression model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(political_violent_extremism)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,864
+Columns: 102
+$ Year_Exposure                    &lt;int&gt; 2022, 2022, 2022, 2022, 2022, 2022, 2…
+$ Violent                          &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ Criminal_Severity                &lt;chr&gt; "Personal Violence", "Threatening (Fe…
+$ Criminal_Charges                 &lt;chr&gt; "Felony", "Felony", "Unknown", "Felon…
+$ Indict_Arrest                    &lt;chr&gt; "Arrested, indict NA", "Indicted and …
+$ Current_Status                   &lt;chr&gt; "Arrested", "Arrested", "Arrested", "…
+$ Group_Membership                 &lt;chr&gt; "Extremist Group", "Extremist Group",…
+$ Actively_Recruited               &lt;chr&gt; "Unknown", "Unknown", "No", "Unknown"…
+$ Recruiter1                       &lt;chr&gt; "Unknown", "Unknown", "Not recruited"…
+$ Recruiter2                       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ Recruiter3                       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ Actively_Connect                 &lt;chr&gt; "Unknown", "Unknown", "Unknown", "Unk…
+$ Group_Competition                &lt;chr&gt; "No", "No", "No", "Unknown", "Unknown…
+$ Role_Group                       &lt;chr&gt; "Follower", "Follower", "Leader", "Fo…
+$ Length_Group                     &lt;chr&gt; "Unknown", "Unknown", "Unknown", "Unk…
+$ Clique                           &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Internet_Radicalization          &lt;chr&gt; "Some role", "Some role", "Some role"…
+$ Media_Radicalization             &lt;chr&gt; "No role", "Some role", "No role", "U…
+$ Social_Media                     &lt;chr&gt; "Primary means", "Primary means", "Pr…
+$ Social_Media_Frequency           &lt;chr&gt; "Unknown", "Occasionally", "Frequentl…
+$ Social_Media_Platform1           &lt;chr&gt; "Facebook", "Dark web", "Dark web", "…
+$ Social_Media_Platform2           &lt;chr&gt; "Instagram", NA, NA, NA, NA, "Telegra…
+$ Social_Media_Platform3           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ Social_Media_Platform4           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ Social_Media_Platform5           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ Social_Media_Activities1         &lt;chr&gt; "Unknown", "Consumption", "Consumptio…
+$ Social_Media_Activities2         &lt;chr&gt; NA, "Dissemination", "Dissemination",…
+$ Social_Media_Activities3         &lt;chr&gt; NA, "Dialogue", "Establish relation",…
+$ Social_Media_Activities4         &lt;chr&gt; NA, "Establish relation", "Domestic a…
+$ Social_Media_Activities5         &lt;chr&gt; NA, "Domestic attack plan", NA, NA, N…
+$ Social_Media_Activities6         &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ Social_Media_Activities7         &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ Radicalization_Islamist          &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Radicalization_Far_Right         &lt;chr&gt; "Yes", "Yes", "Yes", "Yes", "Yes", "Y…
+$ Radicalization_Far_Left          &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Radicalization_Single_Issue      &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Ideological_Sub_Category1        &lt;chr&gt; "Militia/gun rights", "White Supremac…
+$ Ideological_Sub_Category2        &lt;chr&gt; "Xenophobia", "Sovereign Citizens", N…
+$ Ideological_Sub_Category3        &lt;chr&gt; "Pro-Trump", "Anti-LGBTQ", NA, "Pro-T…
+$ Loc_Habitation_State1            &lt;chr&gt; "Florida", "Mississippi", "Texas", "F…
+$ Loc_Habitation_City1             &lt;chr&gt; "Zephyrhills", "Nesbit", "Haslet", "S…
+$ Loc_Habitation_State2            &lt;chr&gt; NA, NA, "California", NA, NA, NA, NA,…
+$ Loc_Habitation_City2             &lt;chr&gt; NA, NA, "Temecula", NA, NA, NA, NA, "…
+$ Itinerant                        &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ External_Rad                     &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Radical_Behaviors                &lt;chr&gt; "Non-Violent Plot", "Violent Plot", "…
+$ Radical_Beliefs                  &lt;chr&gt; "Exposed", "Shared Belief", "Pursuit"…
+$ US_Govt_Leader                   &lt;chr&gt; "Yes", "No", "No", "Yes", "Yes", "Yes…
+$ Foreign_Govt_Leader              &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Event_Influence1                 &lt;chr&gt; "2020 US Election", "None", "None", "…
+$ Event_Influence2                 &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ Event_Influence3                 &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ Event_Influence4                 &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ Radicalization_Sequence          &lt;chr&gt; "Belief-first", "Belief-first", "Beli…
+$ Radicalization_Place             &lt;chr&gt; "No", "No", "No", "Unknown", "Unknown…
+$ Prison_Radicalize                &lt;chr&gt; "Not applicable", "Not applicable", "…
+$ Broad_Ethnicity                  &lt;chr&gt; "White", "White", "White", "White", "…
+$ Age                              &lt;int&gt; 39, 21, 22, 33, 61, 28, 21, 33, 42, 4…
+$ Marital_Status                   &lt;chr&gt; "Unknown", "Single (NM)", "Single (NM…
+$ Children                         &lt;int&gt; 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 2, 1…
+$ Sex                              &lt;chr&gt; "Male", "Male", "Male", "Male", "Male…
+$ Religious_Background             &lt;chr&gt; "Unknown", "Unknown", "Unknown", "Unk…
+$ Convert                          &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Reawakening                      &lt;chr&gt; "Unknown", "No", "No", "No", "No", "N…
+$ Citizenship                      &lt;chr&gt; "United States of America", "United S…
+$ Residency_Status                 &lt;chr&gt; "Born citizen", "Born citizen", "Born…
+$ Nativity                         &lt;chr&gt; "United States of America", "United S…
+$ Time_US_Months                   &lt;int&gt; 468, 252, 264, 396, 732, 336, 252, 39…
+$ Immigrant_Generation             &lt;chr&gt; "3+ generations", "3+ generations", "…
+$ Immigrant_Source                 &lt;chr&gt; "-88", "-88", "-88", "-88", "-88", "-…
+$ Education                        &lt;chr&gt; "Unknown", "Unknown", "Some college",…
+$ Student                          &lt;chr&gt; "No", "No", "Yes", "No", "No", "No", …
+$ Employment_Status                &lt;chr&gt; "Self-employed", "Unknown", "Employed…
+$ Work_History                     &lt;chr&gt; "Regularly Employed", "Unknown", "Reg…
+$ Military                         &lt;chr&gt; "Yes", "No", "No", "No", "Yes", "Yes"…
+$ Military_Status_Arrest           &lt;chr&gt; "Inactive", "Never Served", "Never Se…
+$ Foreign_Military                 &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Social_Stratum_Childhood         &lt;chr&gt; "Unknown", "Unknown", "Middle", "Unkn…
+$ Social_Stratum_Adulthood         &lt;chr&gt; "Middle", "Low", "Middle", "Unknown",…
+$ Abuse_Child                      &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Abuse_Adult                      &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Abuse_Type1                      &lt;chr&gt; "No Abuse", "No Abuse", "No Abuse", "…
+$ Abuse_Type2                      &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ Abuse_Type3                      &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ Psychological                    &lt;chr&gt; "None", "None", "None", "None", "None…
+$ Alcohol_Drug                     &lt;chr&gt; "No", "No", "No", "No", "No", "Yes", …
+$ Radical_Friend                   &lt;chr&gt; "Violent", "Unknown", "Violent", "Vio…
+$ Radical_Family                   &lt;chr&gt; "No", "Unknown", "Unknown", "Unknown"…
+$ Radical_Signif_Other             &lt;chr&gt; "No", "Unknown", "Unknown", "Unknown"…
+$ Previous_Criminal_Activity       &lt;chr&gt; "None", "None", "None", "Unknown", "U…
+$ Previous_Criminal_Activity_Type1 &lt;chr&gt; "No crime", "No crime", "No crime", "…
+$ Previous_Criminal_Activity_Type2 &lt;chr&gt; NA, NA, NA, NA, NA, NA, "Other", NA, …
+$ Previous_Criminal_Activity_Type3 &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, "…
+$ Previous_Criminal_Activity_Age   &lt;chr&gt; "No crime", "No crime", "No crime", "…
+$ Gang                             &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Gang_Age_Joined                  &lt;chr&gt; "No gang", "No gang", "No gang", "No …
+$ Trauma                           &lt;chr&gt; "No", "No", "No", "Unknown", "Unknown…
+$ Other_Ideologies                 &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Angry_US                         &lt;chr&gt; "Yes", "Yes", "No", "Yes", "Yes", "Ye…
+$ Group_Grievance                  &lt;chr&gt; "No", "No", "No", "Unknown", "Unknown…
+$ Lone_Offender                    &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Rad_Duration                     &lt;chr&gt; "Unknown", "Medium", "Unknown", "Shor…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(political_violent_extremism<span class="sc">$</span>Loc_Habitation_State1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                 -99              Alabama               Alaska 
+                  15                   50                    9 
+             Arizona             Arkansas           California 
+                  68                   29                  314 
+            Colorado          Connecticut             Delaware 
+                  49                   20                   12 
+District of Columbia              Florida              Georgia 
+                  16                  185                   71 
+              Hawaii                Idaho             Illinois 
+                   4                   36                   97 
+             Indiana                 Iowa               Kansas 
+                  32                   21                   22 
+            Kentucky            Louisiana                Maine 
+                  21                   30                   11 
+            Maryland        Massachusetts             Michigan 
+                  46                   48                   86 
+           Minnesota          Mississippi             Missouri 
+                  56                   43                   50 
+             Montana             Nebraska               Nevada 
+                  36                    8                   34 
+       New Hampshire           New Jersey           New Mexico 
+                  13                   67                   17 
+            New York       North Carolina         North Dakota 
+                 218                   83                    7 
+                Ohio             Oklahoma               Oregon 
+                  82                   27                   93 
+        Pennsylvania          Puerto Rico         Rhode Island 
+                  93                   19                    7 
+      South Carolina         South Dakota            Tennessee 
+                  24                    6                   84 
+               Texas                 Utah              Vermont 
+                 183                   42                    5 
+            Virginia           Washington        West Virginia 
+                  73                  137                   15 
+           Wisconsin              Wyoming 
+                  42                    8 </code></pre>
+</div>
+</div>
+<p>There are some variables that are largely filled with NA values, so I’m going to exclude these from my maximum model. Filtering for instances where these values aren’t NA will cut down my dataset significantly.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>political_extremism <span class="ot">&lt;-</span> political_violent_extremism <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(Criminal_Severity<span class="sc">:</span>Current_Status, Recruiter2, Recruiter3, Social_Media_Platform2<span class="sc">:</span>Social_Media_Platform5, Social_Media_Activities2<span class="sc">:</span>Social_Media_Activities7, Loc_Habitation_State1<span class="sc">:</span>Itinerant, Event_Influence2<span class="sc">:</span>Event_Influence4, Abuse_Type2, Abuse_Type3, Previous_Criminal_Activity_Type2, Previous_Criminal_Activity_Type3, Citizenship, Nativity, Time_US_Months, Radicalization_Islamist, Ideological_Sub_Category2, Ideological_Sub_Category3)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>()</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(political_extremism)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,781
+Columns: 68
+$ Year_Exposure                    &lt;int&gt; 2022, 2022, 2022, 2022, 2022, 2022, 2…
+$ Violent                          &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ Group_Membership                 &lt;chr&gt; "Extremist Group", "Extremist Group",…
+$ Actively_Recruited               &lt;chr&gt; "Unknown", "Unknown", "No", "Unknown"…
+$ Recruiter1                       &lt;chr&gt; "Unknown", "Unknown", "Not recruited"…
+$ Actively_Connect                 &lt;chr&gt; "Unknown", "Unknown", "Unknown", "Unk…
+$ Group_Competition                &lt;chr&gt; "No", "No", "No", "Unknown", "Unknown…
+$ Role_Group                       &lt;chr&gt; "Follower", "Follower", "Leader", "Fo…
+$ Length_Group                     &lt;chr&gt; "Unknown", "Unknown", "Unknown", "Unk…
+$ Clique                           &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Internet_Radicalization          &lt;chr&gt; "Some role", "Some role", "Some role"…
+$ Media_Radicalization             &lt;chr&gt; "No role", "Some role", "No role", "U…
+$ Social_Media                     &lt;chr&gt; "Primary means", "Primary means", "Pr…
+$ Social_Media_Frequency           &lt;chr&gt; "Unknown", "Occasionally", "Frequentl…
+$ Social_Media_Platform1           &lt;chr&gt; "Facebook", "Dark web", "Dark web", "…
+$ Social_Media_Activities1         &lt;chr&gt; "Unknown", "Consumption", "Consumptio…
+$ Radicalization_Far_Right         &lt;chr&gt; "Yes", "Yes", "Yes", "Yes", "Yes", "Y…
+$ Radicalization_Far_Left          &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Radicalization_Single_Issue      &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Ideological_Sub_Category1        &lt;chr&gt; "Militia/gun rights", "White Supremac…
+$ External_Rad                     &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Radical_Behaviors                &lt;chr&gt; "Non-Violent Plot", "Violent Plot", "…
+$ Radical_Beliefs                  &lt;chr&gt; "Exposed", "Shared Belief", "Pursuit"…
+$ US_Govt_Leader                   &lt;chr&gt; "Yes", "No", "No", "Yes", "Yes", "Yes…
+$ Foreign_Govt_Leader              &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Event_Influence1                 &lt;chr&gt; "2020 US Election", "None", "None", "…
+$ Radicalization_Sequence          &lt;chr&gt; "Belief-first", "Belief-first", "Beli…
+$ Radicalization_Place             &lt;chr&gt; "No", "No", "No", "Unknown", "Unknown…
+$ Prison_Radicalize                &lt;chr&gt; "Not applicable", "Not applicable", "…
+$ Broad_Ethnicity                  &lt;chr&gt; "White", "White", "White", "White", "…
+$ Age                              &lt;int&gt; 39, 21, 22, 33, 61, 28, 21, 33, 42, 4…
+$ Marital_Status                   &lt;chr&gt; "Unknown", "Single (NM)", "Single (NM…
+$ Children                         &lt;int&gt; 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 2, 1…
+$ Sex                              &lt;chr&gt; "Male", "Male", "Male", "Male", "Male…
+$ Religious_Background             &lt;chr&gt; "Unknown", "Unknown", "Unknown", "Unk…
+$ Convert                          &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Reawakening                      &lt;chr&gt; "Unknown", "No", "No", "No", "No", "N…
+$ Residency_Status                 &lt;chr&gt; "Born citizen", "Born citizen", "Born…
+$ Immigrant_Generation             &lt;chr&gt; "3+ generations", "3+ generations", "…
+$ Immigrant_Source                 &lt;chr&gt; "-88", "-88", "-88", "-88", "-88", "-…
+$ Education                        &lt;chr&gt; "Unknown", "Unknown", "Some college",…
+$ Student                          &lt;chr&gt; "No", "No", "Yes", "No", "No", "No", …
+$ Employment_Status                &lt;chr&gt; "Self-employed", "Unknown", "Employed…
+$ Work_History                     &lt;chr&gt; "Regularly Employed", "Unknown", "Reg…
+$ Military                         &lt;chr&gt; "Yes", "No", "No", "No", "Yes", "Yes"…
+$ Military_Status_Arrest           &lt;chr&gt; "Inactive", "Never Served", "Never Se…
+$ Foreign_Military                 &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Social_Stratum_Childhood         &lt;chr&gt; "Unknown", "Unknown", "Middle", "Unkn…
+$ Social_Stratum_Adulthood         &lt;chr&gt; "Middle", "Low", "Middle", "Unknown",…
+$ Abuse_Child                      &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Abuse_Adult                      &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Abuse_Type1                      &lt;chr&gt; "No Abuse", "No Abuse", "No Abuse", "…
+$ Psychological                    &lt;chr&gt; "None", "None", "None", "None", "None…
+$ Alcohol_Drug                     &lt;chr&gt; "No", "No", "No", "No", "No", "Yes", …
+$ Radical_Friend                   &lt;chr&gt; "Violent", "Unknown", "Violent", "Vio…
+$ Radical_Family                   &lt;chr&gt; "No", "Unknown", "Unknown", "Unknown"…
+$ Radical_Signif_Other             &lt;chr&gt; "No", "Unknown", "Unknown", "Unknown"…
+$ Previous_Criminal_Activity       &lt;chr&gt; "None", "None", "None", "Unknown", "U…
+$ Previous_Criminal_Activity_Type1 &lt;chr&gt; "No crime", "No crime", "No crime", "…
+$ Previous_Criminal_Activity_Age   &lt;chr&gt; "No crime", "No crime", "No crime", "…
+$ Gang                             &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Gang_Age_Joined                  &lt;chr&gt; "No gang", "No gang", "No gang", "No …
+$ Trauma                           &lt;chr&gt; "No", "No", "No", "Unknown", "Unknown…
+$ Other_Ideologies                 &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Angry_US                         &lt;chr&gt; "Yes", "Yes", "No", "Yes", "Yes", "Ye…
+$ Group_Grievance                  &lt;chr&gt; "No", "No", "No", "Unknown", "Unknown…
+$ Lone_Offender                    &lt;chr&gt; "No", "No", "No", "No", "No", "No", "…
+$ Rad_Duration                     &lt;chr&gt; "Unknown", "Medium", "Unknown", "Shor…</code></pre>
+</div>
+</div>
+<p>Because I am working with 60 variables–some of which have 10+ levels–I doubt that my computer would be able to process a full maximum model with interaction terms included. I’ll most likely have to rely on intuition when it comes to determining which interactions I would like to include later down the line.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(leaps)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>extr_max <span class="ot">&lt;-</span> <span class="fu">glm</span>(Violent <span class="sc">~</span> ., political_extremism, <span class="at">family =</span> <span class="fu">binomial</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>This model has over 356 parameters due to large factor variables, so variable selection might take a while.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co">#var_sel &lt;- step(extr_max, direction = "both")</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="co">#summary(var_sel)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Now that I have a model, I’m going to test it for statistical significance with <span class="math inline">\(\alpha = 0.05\)</span></p>
+<p>Reduced Model: <span class="math inline">\(\text{log}({\hat{Violent}}) = \beta_0\)</span></p>
+<p>Full Model: <span class="math inline">\(\text{log}({\hat{Violent}}) = \beta_0 + \beta_1{YearExposure} + \cdots + \beta_{110}RadDurationUnknown\)</span></p>
+<p><span class="math display">\[H_0: \beta_j = 0: j = 1,\cdots,110 \\H_a: \exists \beta_j \neq 0: j = 1, \cdots, 110\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">#chi2 &lt;- summary(var_sel)$null - summary(var_sel)$deviance</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">#p &lt;- pchisq(chi2, 108, lower.tail = FALSE)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><span class="math inline">\(\chi^2 = 2095.76\)</span>, <span class="math inline">\(p = 0\)</span>, <span class="math inline">\(p &lt; \alpha\)</span> so therefore we reject the null hypothesis and conclude that a generalized linear model predicting the log-odds of a political extremist being violent by all of the applicable variables in the dataset is statistically significant at <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<p>Now, I’m going to test the fit of the model using a Hosmer-Lemeshow test at <span class="math inline">\(\alpha = 0.05\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">#hoslem.test(var_sel$y, fitted(var_sel))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>For the Hosmer-Lemeshow test, <span class="math inline">\(p &lt; \alpha\)</span>, so therefore we reject the null hypothesis and conclude that a generalized linear model predicting the log-odds of a political extremist being violent by all of the applicable variables in the dataset is not a good fit for the data. I’m going to look at the plots to see how far off I might be.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">#plot(fitted(var_sel), residuals.glm(var_sel), type = "pearson")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In looking at this plot, the Pearson residual plot shows that the residuals are roughly parallel to one another, but there’s a significant tail as the fitted values get closer to one. The goal is for these lines to be parallel without a significant tail, so this model definitely needs to be modified in some way.</p>
+<p>I’m going to look at the GVIF scores for these regression parameters to see if there are any suspected issues of multicollinearity</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">#VIF(var_sel)</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># VIF isn't working because of aliased coefficients (perfect multicollinearity), so I'm going to see what those coefficients are</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co">#alias(var_sel)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><span class="math inline">\(\beta RoleGroup_{NoGroup}\)</span> has perfect multicollinearity with <span class="math inline">\(\beta GroupMembership_{No}\)</span>, which makes sense as a person is not going to have a role in a group if they don’t belong to a group in the first place. Because alias() gave <span class="math inline">\(\beta RoleGroup_{NoGroup}\)</span> as the aliased coefficient, I’m going to filter my dataset to exclude observations where Role_Group = No Group.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>pirus_filt <span class="ot">&lt;-</span> political_extremism <span class="sc">%&gt;%</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Role_Group <span class="sc">!=</span> <span class="st">"No group"</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Violent <span class="sc">~</span> Year_Exposure <span class="sc">+</span> Group_Membership <span class="sc">+</span> Role_Group <span class="sc">+</span> Internet_Radicalization <span class="sc">+</span> Social_Media_Frequency <span class="sc">+</span> Radicalization_Far_Right <span class="sc">+</span> Radicalization_Far_Left <span class="sc">+</span> Radicalization_Single_Issue <span class="sc">+</span> Ideological_Sub_Category1 <span class="sc">+</span> Radical_Behaviors <span class="sc">+</span> Radical_Beliefs <span class="sc">+</span> Event_Influence1 <span class="sc">+</span> Radicalization_Sequence <span class="sc">+</span> Age <span class="sc">+</span> Marital_Status <span class="sc">+</span> Sex <span class="sc">+</span> Convert <span class="sc">+</span> Military <span class="sc">+</span> Military_Status_Arrest <span class="sc">+</span> Abuse_Child <span class="sc">+</span> Psychological <span class="sc">+</span> Radical_Friend <span class="sc">+</span> Previous_Criminal_Activity <span class="sc">+</span> Other_Ideologies <span class="sc">+</span> Lone_Offender <span class="sc">+</span> Rad_Duration, pirus_filt, <span class="at">family =</span> <span class="st">"binomial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+</div>
+<p>Once again, I have a singularity in my model with Radicalization_Single_Issue. I’m going to assume that this variable is perfectly multicollinear with Radicalization_Far_Right and Radicalization_Far_Left, given that if someone is in the Radicalization_Single_Issue category as Yes, they will be no for the others. I’m going to try and curtail this by making radicalization one variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>pirus_filt <span class="ot">&lt;-</span> pirus_filt <span class="sc">%&gt;%</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Radicalization =</span> <span class="fu">case_when</span>(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    Radicalization_Far_Right <span class="sc">==</span> <span class="st">"Yes"</span> <span class="sc">~</span> <span class="st">"Far Right"</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    Radicalization_Far_Left <span class="sc">==</span> <span class="st">"Yes"</span> <span class="sc">~</span> <span class="st">"Far Left"</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    Radicalization_Single_Issue <span class="sc">==</span> <span class="st">"Yes"</span> <span class="sc">~</span> <span class="st">"Single Issue"</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">across</span>(<span class="sc">-</span><span class="fu">c</span>(Year_Exposure, Age, Children), as.factor)) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>Radicalization_Far_Right, <span class="sc">-</span>Radicalization_Far_Left, <span class="sc">-</span>Radicalization_Single_Issue) <span class="sc">%&gt;%</span></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 2,198
+Columns: 66
+$ Year_Exposure                    &lt;int&gt; 2022, 2022, 2022, 2022, 2022, 2022, 2…
+$ Violent                          &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ Group_Membership                 &lt;fct&gt; Extremist Group, Extremist Group, Ext…
+$ Actively_Recruited               &lt;fct&gt; Unknown, Unknown, No, Unknown, Unknow…
+$ Recruiter1                       &lt;fct&gt; Unknown, Unknown, Not recruited, Unkn…
+$ Actively_Connect                 &lt;fct&gt; Unknown, Unknown, Unknown, Unknown, U…
+$ Group_Competition                &lt;fct&gt; No, No, No, Unknown, Unknown, Unknown…
+$ Role_Group                       &lt;fct&gt; Follower, Follower, Leader, Follower,…
+$ Length_Group                     &lt;fct&gt; Unknown, Unknown, Unknown, Unknown, U…
+$ Clique                           &lt;fct&gt; No, No, No, No, No, No, No, Yes, No, …
+$ Internet_Radicalization          &lt;fct&gt; Some role, Some role, Some role, Some…
+$ Media_Radicalization             &lt;fct&gt; No role, Some role, No role, Unknown,…
+$ Social_Media                     &lt;fct&gt; Primary means, Primary means, Primary…
+$ Social_Media_Frequency           &lt;fct&gt; Unknown, Occasionally, Frequently, Un…
+$ Social_Media_Platform1           &lt;fct&gt; Facebook, Dark web, Dark web, Unknown…
+$ Social_Media_Activities1         &lt;fct&gt; Unknown, Consumption, Consumption, Un…
+$ Ideological_Sub_Category1        &lt;fct&gt; Militia/gun rights, White Supremacy, …
+$ External_Rad                     &lt;fct&gt; No, No, No, No, No, No, No, No, No, N…
+$ Radical_Behaviors                &lt;fct&gt; Non-Violent Plot, Violent Plot, Viole…
+$ Radical_Beliefs                  &lt;fct&gt; Exposed, Shared Belief, Pursuit, Comm…
+$ US_Govt_Leader                   &lt;fct&gt; Yes, No, No, Yes, Yes, Yes, No, No, N…
+$ Foreign_Govt_Leader              &lt;fct&gt; No, No, No, No, No, No, No, No, No, N…
+$ Event_Influence1                 &lt;fct&gt; 2020 US Election, None, None, 2020 US…
+$ Radicalization_Sequence          &lt;fct&gt; Belief-first, Belief-first, Belief-fi…
+$ Radicalization_Place             &lt;fct&gt; No, No, No, Unknown, Unknown, Unknown…
+$ Prison_Radicalize                &lt;fct&gt; Not applicable, Not applicable, Not a…
+$ Broad_Ethnicity                  &lt;fct&gt; White, White, White, White, White, Wh…
+$ Age                              &lt;int&gt; 39, 21, 22, 33, 61, 28, 33, 49, 40, 6…
+$ Marital_Status                   &lt;fct&gt; Unknown, Single (NM), Single (NM), Ma…
+$ Children                         &lt;int&gt; 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ Sex                              &lt;fct&gt; Male, Male, Male, Male, Male, Male, M…
+$ Religious_Background             &lt;fct&gt; Unknown, Unknown, Unknown, Unknown, U…
+$ Convert                          &lt;fct&gt; No, No, No, No, No, No, No, No, No, N…
+$ Reawakening                      &lt;fct&gt; Unknown, No, No, No, No, No, Unknown,…
+$ Residency_Status                 &lt;fct&gt; Born citizen, Born citizen, Born citi…
+$ Immigrant_Generation             &lt;fct&gt; 3+ generations, 3+ generations, 3+ ge…
+$ Immigrant_Source                 &lt;fct&gt; -88, -88, -88, -88, -88, -88, -88, -8…
+$ Education                        &lt;fct&gt; Unknown, Unknown, Some college, Unkno…
+$ Student                          &lt;fct&gt; No, No, Yes, No, No, No, No, No, No, …
+$ Employment_Status                &lt;fct&gt; Self-employed, Unknown, Employed, Unk…
+$ Work_History                     &lt;fct&gt; Regularly Employed, Unknown, Regularl…
+$ Military                         &lt;fct&gt; Yes, No, No, No, Yes, Yes, No, No, No…
+$ Military_Status_Arrest           &lt;fct&gt; Inactive, Never Served, Never Served,…
+$ Foreign_Military                 &lt;fct&gt; No, No, No, No, No, No, No, No, No, N…
+$ Social_Stratum_Childhood         &lt;fct&gt; Unknown, Unknown, Middle, Unknown, Un…
+$ Social_Stratum_Adulthood         &lt;fct&gt; Middle, Low, Middle, Unknown, Middle,…
+$ Abuse_Child                      &lt;fct&gt; No, No, No, No, No, No, No, No, No, N…
+$ Abuse_Adult                      &lt;fct&gt; No, No, No, No, No, No, No, No, No, N…
+$ Abuse_Type1                      &lt;fct&gt; No Abuse, No Abuse, No Abuse, No Abus…
+$ Psychological                    &lt;fct&gt; None, None, None, None, None, None, N…
+$ Alcohol_Drug                     &lt;fct&gt; No, No, No, No, No, Yes, No, No, No, …
+$ Radical_Friend                   &lt;fct&gt; Violent, Unknown, Violent, Violent, V…
+$ Radical_Family                   &lt;fct&gt; No, Unknown, Unknown, Unknown, Unknow…
+$ Radical_Signif_Other             &lt;fct&gt; No, Unknown, Unknown, Unknown, Unknow…
+$ Previous_Criminal_Activity       &lt;fct&gt; None, None, None, Unknown, Unknown, V…
+$ Previous_Criminal_Activity_Type1 &lt;fct&gt; No crime, No crime, No crime, Unknown…
+$ Previous_Criminal_Activity_Age   &lt;fct&gt; No crime, No crime, No crime, Unknown…
+$ Gang                             &lt;fct&gt; No, No, No, No, No, No, No, No, No, N…
+$ Gang_Age_Joined                  &lt;fct&gt; No gang, No gang, No gang, No gang, N…
+$ Trauma                           &lt;fct&gt; No, No, No, Unknown, Unknown, Unknown…
+$ Other_Ideologies                 &lt;fct&gt; No, No, No, No, No, No, No, No, No, N…
+$ Angry_US                         &lt;fct&gt; Yes, Yes, No, Yes, Yes, Yes, No, No, …
+$ Group_Grievance                  &lt;fct&gt; No, No, No, Unknown, Unknown, Unknown…
+$ Lone_Offender                    &lt;fct&gt; No, No, No, No, No, No, Yes, No, No, …
+$ Rad_Duration                     &lt;fct&gt; Unknown, Medium, Unknown, Short, Shor…
+$ Radicalization                   &lt;fct&gt; Far Right, Far Right, Far Right, Far …</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Re-writing mod2</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>mod2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Violent <span class="sc">~</span> Year_Exposure <span class="sc">+</span> Group_Membership <span class="sc">+</span> Role_Group <span class="sc">+</span> Internet_Radicalization <span class="sc">+</span> Social_Media_Frequency <span class="sc">+</span> Ideological_Sub_Category1 <span class="sc">+</span> Radical_Behaviors <span class="sc">+</span> Radical_Beliefs <span class="sc">+</span> Event_Influence1 <span class="sc">+</span> Radicalization_Sequence <span class="sc">+</span> Age <span class="sc">+</span> Marital_Status <span class="sc">+</span> Sex <span class="sc">+</span> Convert <span class="sc">+</span> Military <span class="sc">+</span> Military_Status_Arrest <span class="sc">+</span> Abuse_Child <span class="sc">+</span> Psychological <span class="sc">+</span> Radical_Friend <span class="sc">+</span> Previous_Criminal_Activity <span class="sc">+</span> Other_Ideologies <span class="sc">+</span> Lone_Offender <span class="sc">+</span> Rad_Duration <span class="sc">+</span> Radicalization, pirus_filt, <span class="at">family =</span> <span class="st">"binomial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">VIF</span>(mod2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                   GVIF Df GVIF^(1/(2*Df))
+Year_Exposure              1.142212e+01  1        3.379662
+Group_Membership           3.409078e+00  3        1.226797
+Role_Group                 2.230019e+00  3        1.143014
+Internet_Radicalization    1.841313e+01  4        1.439266
+Social_Media_Frequency     9.704798e+00  6        1.208506
+Ideological_Sub_Category1  2.036960e+03 18        1.235709
+Radical_Behaviors          5.172520e+00 11        1.077559
+Radical_Beliefs            2.545265e+00  6        1.080964
+Event_Influence1           1.784496e+01 14        1.108401
+Radicalization_Sequence    1.857976e+00  3        1.108766
+Age                        1.254442e+00  1        1.120019
+Marital_Status             2.316411e+00  4        1.110713
+Sex                        1.267440e+00  1        1.125806
+Convert                    1.574765e+00  4        1.058405
+Military                   3.504382e+15  2     7694.011742
+Military_Status_Arrest     4.040020e+15  3      399.083638
+Abuse_Child                1.473458e+00  3        1.066734
+Psychological              1.501084e+00  2        1.106882
+Radical_Friend             2.303486e+00  4        1.109937
+Previous_Criminal_Activity 2.559890e+00  4        1.124677
+Other_Ideologies           1.108721e+00  2        1.026138
+Lone_Offender              1.720768e+00  1        1.311780
+Rad_Duration               2.340337e+00  3        1.152249
+Radicalization             1.071608e+02  2        3.217429</code></pre>
+</div>
+</div>
+<p>Year_Exposure has a GVIF of 11.4, Ideological_Sub_Category1 has a VIF of <span class="math inline">\(2 * 10^3\)</span>, Event_Influence1 has a VIF of 17.8, and Military and Military_Status_Arrest have VIFs of well over <span class="math inline">\(3 * 10^{15}\)</span>, so we definitely have some variables to consider removing. I’m going to start with Military_Status_Arrest, and keep checking the VIF.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>mod3 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Violent <span class="sc">~</span> Year_Exposure <span class="sc">+</span> Group_Membership <span class="sc">+</span> Role_Group <span class="sc">+</span> Internet_Radicalization <span class="sc">+</span> Social_Media_Frequency <span class="sc">+</span> Ideological_Sub_Category1 <span class="sc">+</span> Radical_Behaviors <span class="sc">+</span> Radical_Beliefs <span class="sc">+</span> Event_Influence1 <span class="sc">+</span> Radicalization_Sequence <span class="sc">+</span> Age <span class="sc">+</span> Marital_Status <span class="sc">+</span> Sex <span class="sc">+</span> Convert <span class="sc">+</span> Military <span class="sc">+</span> Abuse_Child <span class="sc">+</span> Psychological <span class="sc">+</span> Radical_Friend <span class="sc">+</span> Previous_Criminal_Activity <span class="sc">+</span> Other_Ideologies <span class="sc">+</span> Lone_Offender <span class="sc">+</span> Rad_Duration <span class="sc">+</span> Radicalization, pirus_filt, <span class="at">family =</span> <span class="st">"binomial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Violent ~ Year_Exposure + Group_Membership + Role_Group + 
+    Internet_Radicalization + Social_Media_Frequency + Ideological_Sub_Category1 + 
+    Radical_Behaviors + Radical_Beliefs + Event_Influence1 + 
+    Radicalization_Sequence + Age + Marital_Status + Sex + Convert + 
+    Military + Abuse_Child + Psychological + Radical_Friend + 
+    Previous_Criminal_Activity + Other_Ideologies + Lone_Offender + 
+    Rad_Duration + Radicalization, family = "binomial", data = pirus_filt)
+
+Coefficients:
+                                              Estimate Std. Error z value
+(Intercept)                                 -4.349e+01  2.922e+01  -1.488
+Year_Exposure                                1.853e-02  1.442e-02   1.285
+Group_MembershipExtremist Group              4.283e-01  4.112e-01   1.041
+Group_MembershipInformal Group               1.358e+00  4.292e-01   3.163
+Group_MembershipUnknown                      3.981e-01  9.345e-01   0.426
+Role_GroupLeader                            -2.977e-01  1.992e-01  -1.495
+Role_GroupLoose Associate                   -3.949e-01  2.540e-01  -1.554
+Role_GroupUnknown                            4.820e-01  2.849e-01   1.692
+Internet_RadicalizationNot applicable        1.373e+00  5.954e-01   2.306
+Internet_RadicalizationPrimary means         1.039e-01  6.369e-01   0.163
+Internet_RadicalizationSome role             1.329e+00  4.958e-01   2.681
+Internet_RadicalizationUnknown               1.164e+00  4.618e-01   2.521
+Social_Media_FrequencyFrequently             7.775e-01  4.966e-01   1.566
+Social_Media_FrequencyNot applicable         1.161e-01  4.553e-01   0.255
+Social_Media_FrequencyOccasionally           7.990e-01  4.705e-01   1.698
+Social_Media_FrequencyRarely                -1.039e+00  7.696e-01  -1.350
+Social_Media_FrequencySporadically          -1.752e+00  6.645e-01  -2.637
+Social_Media_FrequencyUnknown                7.967e-02  3.471e-01   0.230
+Ideological_Sub_Category1Animal Rights      -3.154e+00  7.208e-01  -4.376
+Ideological_Sub_Category1Anti-Law Enf.       7.530e-01  1.222e+00   0.616
+Ideological_Sub_Category1Anti-LGBTQ          2.566e+00  1.523e+00   1.685
+Ideological_Sub_Category1Black Nationalist  -7.113e-01  7.438e-01  -0.956
+Ideological_Sub_Category1Communist          -4.516e-01  8.461e-01  -0.534
+Ideological_Sub_Category1Cult                5.252e-01  1.216e+00   0.432
+Ideological_Sub_Category1Incel               1.669e+01  5.193e+02   0.032
+Ideological_Sub_Category1IRA                -1.275e+01  1.367e+03  -0.009
+Ideological_Sub_Category1Militia/gun rights  7.358e-01  1.119e+00   0.657
+Ideological_Sub_Category1Moorish SCM         8.133e-01  1.611e+00   0.505
+Ideological_Sub_Category1New Left           -1.196e+00  7.916e-01  -1.511
+Ideological_Sub_Category1Other               2.174e+00  1.268e+00   1.714
+Ideological_Sub_Category1PR Ind.             8.527e-01  1.217e+00   0.700
+Ideological_Sub_Category1Pro-Life           -5.783e-01  1.133e+00  -0.510
+Ideological_Sub_Category1Pro-Trump          -3.129e+00  3.319e+00  -0.943
+Ideological_Sub_Category1Sovereign Citizens  2.869e-01  1.122e+00   0.256
+Ideological_Sub_Category1White Supremacy     3.471e-01  1.139e+00   0.305
+Ideological_Sub_Category1Xenophobia          3.717e-01  1.168e+00   0.318
+Radical_BehaviorsConvert Others              8.620e-01  7.312e-01   1.179
+Radical_BehaviorsDistancing                 -1.522e+01  1.188e+03  -0.013
+Radical_BehaviorsLegal Activism             -4.709e-02  5.155e-01  -0.091
+Radical_BehaviorsLifestyle                   1.344e+00  6.595e-01   2.038
+Radical_BehaviorsMat/Fin Support             1.843e-01  5.950e-01   0.310
+Radical_BehaviorsNon-Violent Plot            3.375e-01  4.437e-01   0.761
+Radical_BehaviorsNone                       -1.544e+01  1.040e+03  -0.015
+Radical_BehaviorsOperational Support         1.172e+00  4.827e-01   2.428
+Radical_BehaviorsTraining                    1.996e+00  6.241e-01   3.198
+Radical_BehaviorsUnknown                     1.496e+00  5.718e-01   2.616
+Radical_BehaviorsViolent Plot                5.658e+00  5.016e-01  11.278
+Radical_BeliefsExposed                       7.157e-01  2.749e-01   2.604
+Radical_BeliefsFull Knowledge                3.293e-01  2.804e-01   1.175
+Radical_BeliefsNone                         -5.887e-01  1.378e+00  -0.427
+Radical_BeliefsPursuit                      -3.361e-01  4.333e-01  -0.776
+Radical_BeliefsShared Belief                 3.721e-01  1.950e-01   1.908
+Radical_BeliefsUnknown                      -7.420e-01  3.891e-01  -1.907
+Event_Influence12020 US Election            -1.186e+00  7.662e-01  -1.548
+Event_Influence19/11                        -1.328e+00  1.305e+00  -1.017
+Event_Influence1Afghanistan/Iraq War        -1.410e-01  4.053e+00  -0.035
+Event_Influence1Arab Spring                  1.377e+01  2.400e+03   0.006
+Event_Influence1Cold War                     1.689e+01  2.400e+03   0.007
+Event_Influence1COVID-19 Pandemic           -8.907e-01  8.664e-01  -1.028
+Event_Influence1First Gulf War               1.164e+01  2.400e+03   0.005
+Event_Influence1George Floyd Death           4.051e-01  8.494e-01   0.477
+Event_Influence1None                        -4.609e-01  7.526e-01  -0.612
+Event_Influence1Other                       -8.515e-01  8.374e-01  -1.017
+Event_Influence1Ruby Ridge/Waco              2.866e-01  1.033e+00   0.278
+Event_Influence1Unite the Right             -4.354e-01  1.625e+00  -0.268
+Event_Influence1Unknown                     -6.796e-01  7.705e-01  -0.882
+Event_Influence1Vietnam War                 -2.153e-01  9.770e-01  -0.220
+Radicalization_SequenceBelief-first          9.066e-01  6.170e-01   1.469
+Radicalization_SequenceSimultaneous          2.097e-01  7.001e-01   0.300
+Radicalization_SequenceUnknown               1.210e+00  6.196e-01   1.953
+Age                                          3.771e-03  3.074e-03   1.227
+Marital_StatusMarried                       -7.007e-02  2.992e-01  -0.234
+Marital_StatusSingle (NM)                   -2.739e-01  3.022e-01  -0.906
+Marital_StatusUnknown                        5.667e-02  3.051e-01   0.186
+Marital_StatusWidowed                        4.011e-01  2.211e+00   0.181
+SexMale                                      4.826e-01  2.562e-01   1.884
+ConvertBefore                                3.256e+00  1.785e+00   1.824
+ConvertDuring                                1.041e+00  1.740e+00   0.598
+ConvertNo                                    2.882e+00  1.559e+00   1.849
+ConvertUnknown                               1.534e+00  2.185e+00   0.702
+MilitaryUnknown                             -1.762e-01  3.773e-01  -0.467
+MilitaryYes                                 -1.515e-01  2.133e-01  -0.710
+Abuse_ChildYes (both)                       -2.324e+00  1.113e+00  -2.089
+Abuse_ChildYes (family)                     -1.198e+00  5.397e-01  -2.220
+Abuse_ChildYes (non-family)                 -1.076e+00  7.320e-01  -1.470
+PsychologicalNone                           -2.153e-02  3.468e-01  -0.062
+PsychologicalSpeculated                      8.718e-01  3.956e-01   2.204
+Radical_FriendNo                             5.693e-02  4.322e-01   0.132
+Radical_FriendNonviolent                    -6.108e-01  3.150e-01  -1.939
+Radical_FriendUnknown                        9.600e-02  2.855e-01   0.336
+Radical_FriendViolent                        1.060e+00  2.966e-01   3.574
+Previous_Criminal_ActivityMisdemeanors      -7.191e-02  3.689e-01  -0.195
+Previous_Criminal_ActivityNone              -6.551e-02  2.972e-01  -0.220
+Previous_Criminal_ActivityUnknown           -6.761e-01  3.156e-01  -2.143
+Previous_Criminal_ActivityViolent            4.322e-01  3.372e-01   1.282
+Other_IdeologiesUnknown                      1.881e+01  9.611e+02   0.020
+Other_IdeologiesYes                          4.425e-01  4.876e-01   0.907
+Lone_OffenderYes                             9.044e-02  2.088e-01   0.433
+Rad_DurationMedium                          -2.730e-01  2.760e-01  -0.989
+Rad_DurationShort                           -1.513e-01  3.004e-01  -0.504
+Rad_DurationUnknown                         -4.807e-01  2.517e-01  -1.910
+RadicalizationFar Right                     -9.557e-01  1.003e+00  -0.953
+RadicalizationSingle Issue                  -1.160e+00  9.017e-01  -1.286
+                                            Pr(&gt;|z|)    
+(Intercept)                                 0.136761    
+Year_Exposure                               0.198739    
+Group_MembershipExtremist Group             0.297659    
+Group_MembershipInformal Group              0.001564 ** 
+Group_MembershipUnknown                     0.670138    
+Role_GroupLeader                            0.135005    
+Role_GroupLoose Associate                   0.120079    
+Role_GroupUnknown                           0.090729 .  
+Internet_RadicalizationNot applicable       0.021088 *  
+Internet_RadicalizationPrimary means        0.870379    
+Internet_RadicalizationSome role            0.007347 ** 
+Internet_RadicalizationUnknown              0.011717 *  
+Social_Media_FrequencyFrequently            0.117435    
+Social_Media_FrequencyNot applicable        0.798771    
+Social_Media_FrequencyOccasionally          0.089463 .  
+Social_Media_FrequencyRarely                0.177163    
+Social_Media_FrequencySporadically          0.008366 ** 
+Social_Media_FrequencyUnknown               0.818423    
+Ideological_Sub_Category1Animal Rights      1.21e-05 ***
+Ideological_Sub_Category1Anti-Law Enf.      0.537806    
+Ideological_Sub_Category1Anti-LGBTQ         0.092016 .  
+Ideological_Sub_Category1Black Nationalist  0.338953    
+Ideological_Sub_Category1Communist          0.593505    
+Ideological_Sub_Category1Cult               0.665903    
+Ideological_Sub_Category1Incel              0.974365    
+Ideological_Sub_Category1IRA                0.992559    
+Ideological_Sub_Category1Militia/gun rights 0.510924    
+Ideological_Sub_Category1Moorish SCM        0.613673    
+Ideological_Sub_Category1New Left           0.130818    
+Ideological_Sub_Category1Other              0.086440 .  
+Ideological_Sub_Category1PR Ind.            0.483659    
+Ideological_Sub_Category1Pro-Life           0.609815    
+Ideological_Sub_Category1Pro-Trump          0.345721    
+Ideological_Sub_Category1Sovereign Citizens 0.798160    
+Ideological_Sub_Category1White Supremacy    0.760646    
+Ideological_Sub_Category1Xenophobia         0.750227    
+Radical_BehaviorsConvert Others             0.238403    
+Radical_BehaviorsDistancing                 0.989780    
+Radical_BehaviorsLegal Activism             0.927220    
+Radical_BehaviorsLifestyle                  0.041531 *  
+Radical_BehaviorsMat/Fin Support            0.756721    
+Radical_BehaviorsNon-Violent Plot           0.446918    
+Radical_BehaviorsNone                       0.988159    
+Radical_BehaviorsOperational Support        0.015189 *  
+Radical_BehaviorsTraining                   0.001384 ** 
+Radical_BehaviorsUnknown                    0.008899 ** 
+Radical_BehaviorsViolent Plot                &lt; 2e-16 ***
+Radical_BeliefsExposed                      0.009221 ** 
+Radical_BeliefsFull Knowledge               0.240173    
+Radical_BeliefsNone                         0.669285    
+Radical_BeliefsPursuit                      0.437907    
+Radical_BeliefsShared Belief                0.056337 .  
+Radical_BeliefsUnknown                      0.056554 .  
+Event_Influence12020 US Election            0.121716    
+Event_Influence19/11                        0.308938    
+Event_Influence1Afghanistan/Iraq War        0.972251    
+Event_Influence1Arab Spring                 0.995421    
+Event_Influence1Cold War                    0.994385    
+Event_Influence1COVID-19 Pandemic           0.303905    
+Event_Influence1First Gulf War              0.996129    
+Event_Influence1George Floyd Death          0.633384    
+Event_Influence1None                        0.540277    
+Event_Influence1Other                       0.309232    
+Event_Influence1Ruby Ridge/Waco             0.781368    
+Event_Influence1Unite the Right             0.788778    
+Event_Influence1Unknown                     0.377779    
+Event_Influence1Vietnam War                 0.825555    
+Radicalization_SequenceBelief-first         0.141716    
+Radicalization_SequenceSimultaneous         0.764539    
+Radicalization_SequenceUnknown              0.050826 .  
+Age                                         0.219872    
+Marital_StatusMarried                       0.814840    
+Marital_StatusSingle (NM)                   0.364789    
+Marital_StatusUnknown                       0.852636    
+Marital_StatusWidowed                       0.856014    
+SexMale                                     0.059607 .  
+ConvertBefore                               0.068209 .  
+ConvertDuring                               0.549709    
+ConvertNo                                   0.064435 .  
+ConvertUnknown                              0.482713    
+MilitaryUnknown                             0.640436    
+MilitaryYes                                 0.477401    
+Abuse_ChildYes (both)                       0.036721 *  
+Abuse_ChildYes (family)                     0.026434 *  
+Abuse_ChildYes (non-family)                 0.141482    
+PsychologicalNone                           0.950512    
+PsychologicalSpeculated                     0.027546 *  
+Radical_FriendNo                            0.895212    
+Radical_FriendNonviolent                    0.052478 .  
+Radical_FriendUnknown                       0.736709    
+Radical_FriendViolent                       0.000352 ***
+Previous_Criminal_ActivityMisdemeanors      0.845463    
+Previous_Criminal_ActivityNone              0.825526    
+Previous_Criminal_ActivityUnknown           0.032139 *  
+Previous_Criminal_ActivityViolent           0.199882    
+Other_IdeologiesUnknown                     0.984388    
+Other_IdeologiesYes                         0.364175    
+Lone_OffenderYes                            0.664867    
+Rad_DurationMedium                          0.322530    
+Rad_DurationShort                           0.614520    
+Rad_DurationUnknown                         0.056114 .  
+RadicalizationFar Right                     0.340638    
+RadicalizationSingle Issue                  0.198451    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 3036.6  on 2197  degrees of freedom
+Residual deviance: 1279.2  on 2095  degrees of freedom
+AIC: 1485.2
+
+Number of Fisher Scoring iterations: 15</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">VIF</span>(mod3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                  GVIF Df GVIF^(1/(2*Df))
+Year_Exposure                11.378548  1        3.373210
+Group_Membership              3.253259  3        1.217269
+Role_Group                    2.190315  3        1.139596
+Internet_Radicalization      18.144729  4        1.436626
+Social_Media_Frequency        9.656920  6        1.208008
+Ideological_Sub_Category1  1667.392297 18        1.228856
+Radical_Behaviors             5.007512 11        1.075972
+Radical_Beliefs               2.521358  6        1.080114
+Event_Influence1             17.550618 14        1.107743
+Radicalization_Sequence       1.851107  3        1.108082
+Age                           1.253883  1        1.119769
+Marital_Status                2.302580  4        1.109882
+Sex                           1.265147  1        1.124788
+Convert                       1.571008  4        1.058089
+Military                      2.437519  2        1.249502
+Abuse_Child                   1.465940  3        1.065825
+Psychological                 1.495884  2        1.105922
+Radical_Friend                2.291286  4        1.109200
+Previous_Criminal_Activity    2.529804  4        1.123016
+Other_Ideologies              1.106623  2        1.025652
+Lone_Offender                 1.719485  1        1.311292
+Rad_Duration                  2.302888  3        1.149155
+Radicalization               92.643121  2        3.102439</code></pre>
+</div>
+</div>
+<p>Ideological_Sub_Category1 has a VIF of 1667, so I’ll take that out next. Every other variables VIF decreased after removing Military_Status_Arrest, so removing the variable with the highest VIF appears to be making a difference.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>mod4 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Violent <span class="sc">~</span> Year_Exposure <span class="sc">+</span> Group_Membership <span class="sc">+</span> Role_Group <span class="sc">+</span> Internet_Radicalization <span class="sc">+</span> Social_Media_Frequency <span class="sc">+</span> Radical_Behaviors <span class="sc">+</span> Radical_Beliefs <span class="sc">+</span> Event_Influence1 <span class="sc">+</span> Radicalization_Sequence <span class="sc">+</span> Age <span class="sc">+</span> Marital_Status <span class="sc">+</span> Sex <span class="sc">+</span> Convert <span class="sc">+</span> Military <span class="sc">+</span> Abuse_Child <span class="sc">+</span> Psychological <span class="sc">+</span> Radical_Friend <span class="sc">+</span> Previous_Criminal_Activity <span class="sc">+</span> Other_Ideologies <span class="sc">+</span> Lone_Offender <span class="sc">+</span> Rad_Duration <span class="sc">+</span> Radicalization, pirus_filt, <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Violent ~ Year_Exposure + Group_Membership + Role_Group + 
+    Internet_Radicalization + Social_Media_Frequency + Radical_Behaviors + 
+    Radical_Beliefs + Event_Influence1 + Radicalization_Sequence + 
+    Age + Marital_Status + Sex + Convert + Military + Abuse_Child + 
+    Psychological + Radical_Friend + Previous_Criminal_Activity + 
+    Other_Ideologies + Lone_Offender + Rad_Duration + Radicalization, 
+    family = "binomial", data = pirus_filt)
+
+Coefficients:
+                                         Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)                            -3.455e+01  2.762e+01  -1.251 0.210975
+Year_Exposure                           1.329e-02  1.365e-02   0.974 0.330285
+Group_MembershipExtremist Group         6.700e-01  3.485e-01   1.923 0.054530
+Group_MembershipInformal Group          1.774e+00  3.743e-01   4.740 2.14e-06
+Group_MembershipUnknown                 9.316e-01  8.591e-01   1.084 0.278176
+Role_GroupLeader                       -2.008e-01  1.920e-01  -1.046 0.295657
+Role_GroupLoose Associate              -4.102e-01  2.455e-01  -1.671 0.094754
+Role_GroupUnknown                       2.819e-01  2.727e-01   1.034 0.301222
+Internet_RadicalizationNot applicable   1.318e+00  5.703e-01   2.311 0.020850
+Internet_RadicalizationPrimary means    6.922e-02  6.093e-01   0.114 0.909546
+Internet_RadicalizationSome role        1.316e+00  4.811e-01   2.737 0.006209
+Internet_RadicalizationUnknown          1.060e+00  4.501e-01   2.354 0.018564
+Social_Media_FrequencyFrequently        7.182e-01  4.785e-01   1.501 0.133425
+Social_Media_FrequencyNot applicable   -7.238e-02  4.318e-01  -0.168 0.866893
+Social_Media_FrequencyOccasionally      6.816e-01  4.537e-01   1.502 0.133029
+Social_Media_FrequencyRarely           -9.494e-01  7.480e-01  -1.269 0.204338
+Social_Media_FrequencySporadically     -1.299e+00  5.799e-01  -2.240 0.025072
+Social_Media_FrequencyUnknown           4.399e-02  3.331e-01   0.132 0.894945
+Radical_BehaviorsConvert Others         6.814e-01  7.144e-01   0.954 0.340195
+Radical_BehaviorsDistancing            -1.411e+01  7.238e+02  -0.019 0.984447
+Radical_BehaviorsLegal Activism        -1.696e-01  5.017e-01  -0.338 0.735371
+Radical_BehaviorsLifestyle              1.122e+00  6.490e-01   1.729 0.083732
+Radical_BehaviorsMat/Fin Support        2.175e-01  5.861e-01   0.371 0.710608
+Radical_BehaviorsNon-Violent Plot       1.930e-01  4.314e-01   0.447 0.654552
+Radical_BehaviorsNone                  -1.416e+01  6.619e+02  -0.021 0.982936
+Radical_BehaviorsOperational Support    1.082e+00  4.723e-01   2.291 0.021982
+Radical_BehaviorsTraining               2.024e+00  6.114e-01   3.310 0.000932
+Radical_BehaviorsUnknown                1.391e+00  5.547e-01   2.508 0.012132
+Radical_BehaviorsViolent Plot           5.631e+00  4.888e-01  11.519  &lt; 2e-16
+Radical_BeliefsExposed                  7.553e-01  2.610e-01   2.894 0.003809
+Radical_BeliefsFull Knowledge           4.678e-01  2.683e-01   1.743 0.081269
+Radical_BeliefsNone                    -1.643e-01  1.296e+00  -0.127 0.899123
+Radical_BeliefsPursuit                 -4.568e-01  4.278e-01  -1.068 0.285625
+Radical_BeliefsShared Belief            4.909e-01  1.888e-01   2.600 0.009310
+Radical_BeliefsUnknown                 -5.652e-01  3.854e-01  -1.467 0.142456
+Event_Influence12020 US Election       -1.107e+00  7.484e-01  -1.479 0.139154
+Event_Influence19/11                   -1.354e+00  1.291e+00  -1.049 0.294184
+Event_Influence1Afghanistan/Iraq War   -1.094e+00  3.250e+00  -0.337 0.736350
+Event_Influence1Arab Spring             1.388e+01  1.455e+03   0.010 0.992390
+Event_Influence1Cold War                1.634e+01  1.455e+03   0.011 0.991044
+Event_Influence1COVID-19 Pandemic      -6.415e-01  8.408e-01  -0.763 0.445474
+Event_Influence1First Gulf War          1.033e+01  1.455e+03   0.007 0.994337
+Event_Influence1George Floyd Death      9.579e-01  8.252e-01   1.161 0.245728
+Event_Influence1None                   -4.201e-01  7.348e-01  -0.572 0.567482
+Event_Influence1Other                  -6.030e-01  8.134e-01  -0.741 0.458492
+Event_Influence1Ruby Ridge/Waco         4.916e-01  1.020e+00   0.482 0.629742
+Event_Influence1Unite the Right         4.083e-01  1.568e+00   0.260 0.794557
+Event_Influence1Unknown                -5.764e-01  7.535e-01  -0.765 0.444236
+Event_Influence1Vietnam War             7.470e-02  8.986e-01   0.083 0.933746
+Radicalization_SequenceBelief-first     8.993e-01  6.087e-01   1.477 0.139566
+Radicalization_SequenceSimultaneous     2.948e-01  6.875e-01   0.429 0.668123
+Radicalization_SequenceUnknown          1.213e+00  6.121e-01   1.982 0.047535
+Age                                     4.686e-03  3.065e-03   1.529 0.126365
+Marital_StatusMarried                  -1.479e-01  2.934e-01  -0.504 0.614092
+Marital_StatusSingle (NM)              -3.194e-01  2.967e-01  -1.076 0.281745
+Marital_StatusUnknown                  -3.394e-02  3.004e-01  -0.113 0.910037
+Marital_StatusWidowed                  -1.070e-01  2.263e+00  -0.047 0.962273
+SexMale                                 5.742e-01  2.395e-01   2.398 0.016507
+ConvertBefore                           2.659e+00  1.617e+00   1.644 0.100214
+ConvertDuring                           6.293e-01  1.600e+00   0.393 0.693999
+ConvertNo                               2.633e+00  1.402e+00   1.879 0.060249
+ConvertUnknown                          1.201e+00  2.005e+00   0.599 0.549135
+MilitaryUnknown                        -1.175e-01  3.695e-01  -0.318 0.750443
+MilitaryYes                            -8.793e-02  2.093e-01  -0.420 0.674386
+Abuse_ChildYes (both)                  -2.552e+00  1.178e+00  -2.167 0.030241
+Abuse_ChildYes (family)                -1.205e+00  5.283e-01  -2.281 0.022523
+Abuse_ChildYes (non-family)            -8.861e-01  7.232e-01  -1.225 0.220481
+PsychologicalNone                       8.297e-02  3.372e-01   0.246 0.805637
+PsychologicalSpeculated                 9.722e-01  3.836e-01   2.535 0.011260
+Radical_FriendNo                        2.978e-01  4.093e-01   0.728 0.466785
+Radical_FriendNonviolent               -5.699e-01  3.040e-01  -1.875 0.060822
+Radical_FriendUnknown                   1.468e-01  2.755e-01   0.533 0.594061
+Radical_FriendViolent                   9.890e-01  2.876e-01   3.439 0.000585
+Previous_Criminal_ActivityMisdemeanors -2.672e-02  3.609e-01  -0.074 0.940986
+Previous_Criminal_ActivityNone         -1.179e-01  2.932e-01  -0.402 0.687575
+Previous_Criminal_ActivityUnknown      -7.177e-01  3.119e-01  -2.301 0.021401
+Previous_Criminal_ActivityViolent       4.131e-01  3.341e-01   1.237 0.216185
+Other_IdeologiesUnknown                 1.771e+01  5.840e+02   0.030 0.975806
+Other_IdeologiesYes                     6.358e-01  4.484e-01   1.418 0.156212
+Lone_OffenderYes                        2.290e-01  2.027e-01   1.130 0.258426
+Rad_DurationMedium                     -1.133e-01  2.622e-01  -0.432 0.665670
+Rad_DurationShort                       2.674e-03  2.848e-01   0.009 0.992508
+Rad_DurationUnknown                    -3.426e-01  2.375e-01  -1.443 0.149140
+RadicalizationFar Right                 8.149e-01  2.432e-01   3.351 0.000805
+RadicalizationSingle Issue              6.577e-01  3.362e-01   1.956 0.050442
+                                          
+(Intercept)                               
+Year_Exposure                             
+Group_MembershipExtremist Group        .  
+Group_MembershipInformal Group         ***
+Group_MembershipUnknown                   
+Role_GroupLeader                          
+Role_GroupLoose Associate              .  
+Role_GroupUnknown                         
+Internet_RadicalizationNot applicable  *  
+Internet_RadicalizationPrimary means      
+Internet_RadicalizationSome role       ** 
+Internet_RadicalizationUnknown         *  
+Social_Media_FrequencyFrequently          
+Social_Media_FrequencyNot applicable      
+Social_Media_FrequencyOccasionally        
+Social_Media_FrequencyRarely              
+Social_Media_FrequencySporadically     *  
+Social_Media_FrequencyUnknown             
+Radical_BehaviorsConvert Others           
+Radical_BehaviorsDistancing               
+Radical_BehaviorsLegal Activism           
+Radical_BehaviorsLifestyle             .  
+Radical_BehaviorsMat/Fin Support          
+Radical_BehaviorsNon-Violent Plot         
+Radical_BehaviorsNone                     
+Radical_BehaviorsOperational Support   *  
+Radical_BehaviorsTraining              ***
+Radical_BehaviorsUnknown               *  
+Radical_BehaviorsViolent Plot          ***
+Radical_BeliefsExposed                 ** 
+Radical_BeliefsFull Knowledge          .  
+Radical_BeliefsNone                       
+Radical_BeliefsPursuit                    
+Radical_BeliefsShared Belief           ** 
+Radical_BeliefsUnknown                    
+Event_Influence12020 US Election          
+Event_Influence19/11                      
+Event_Influence1Afghanistan/Iraq War      
+Event_Influence1Arab Spring               
+Event_Influence1Cold War                  
+Event_Influence1COVID-19 Pandemic         
+Event_Influence1First Gulf War            
+Event_Influence1George Floyd Death        
+Event_Influence1None                      
+Event_Influence1Other                     
+Event_Influence1Ruby Ridge/Waco           
+Event_Influence1Unite the Right           
+Event_Influence1Unknown                   
+Event_Influence1Vietnam War               
+Radicalization_SequenceBelief-first       
+Radicalization_SequenceSimultaneous       
+Radicalization_SequenceUnknown         *  
+Age                                       
+Marital_StatusMarried                     
+Marital_StatusSingle (NM)                 
+Marital_StatusUnknown                     
+Marital_StatusWidowed                     
+SexMale                                *  
+ConvertBefore                             
+ConvertDuring                             
+ConvertNo                              .  
+ConvertUnknown                            
+MilitaryUnknown                           
+MilitaryYes                               
+Abuse_ChildYes (both)                  *  
+Abuse_ChildYes (family)                *  
+Abuse_ChildYes (non-family)               
+PsychologicalNone                         
+PsychologicalSpeculated                *  
+Radical_FriendNo                          
+Radical_FriendNonviolent               .  
+Radical_FriendUnknown                     
+Radical_FriendViolent                  ***
+Previous_Criminal_ActivityMisdemeanors    
+Previous_Criminal_ActivityNone            
+Previous_Criminal_ActivityUnknown      *  
+Previous_Criminal_ActivityViolent         
+Other_IdeologiesUnknown                   
+Other_IdeologiesYes                       
+Lone_OffenderYes                          
+Rad_DurationMedium                        
+Rad_DurationShort                         
+Rad_DurationUnknown                       
+RadicalizationFar Right                ***
+RadicalizationSingle Issue             .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 3036.6  on 2197  degrees of freedom
+Residual deviance: 1345.2  on 2113  degrees of freedom
+AIC: 1515.2
+
+Number of Fisher Scoring iterations: 14</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">VIF</span>(mod4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                GVIF Df GVIF^(1/(2*Df))
+Year_Exposure              10.252837  1        3.202005
+Group_Membership            2.172338  3        1.138032
+Role_Group                  2.003303  3        1.122771
+Internet_Radicalization    15.420683  4        1.407709
+Social_Media_Frequency      7.494483  6        1.182756
+Radical_Behaviors           4.087557 11        1.066090
+Radical_Beliefs             2.243387  6        1.069651
+Event_Influence1            7.200559 14        1.073051
+Radicalization_Sequence     1.744226  3        1.097153
+Age                         1.218096  1        1.103674
+Marital_Status              2.071011  4        1.095274
+Sex                         1.176230  1        1.084542
+Convert                     1.452472  4        1.047764
+Military                    2.272277  2        1.227765
+Abuse_Child                 1.425506  3        1.060868
+Psychological               1.405246  2        1.088775
+Radical_Friend              1.977917  4        1.088995
+Previous_Criminal_Activity  2.326670  4        1.111327
+Other_Ideologies            1.082680  2        1.020058
+Lone_Offender               1.666666  1        1.290994
+Rad_Duration                2.071291  3        1.129034
+Radicalization              2.176581  2        1.214629</code></pre>
+</div>
+</div>
+<p>There are only two remaining variables with a VIF &gt; 10, which are Year_Exposure and Internet_Radicalization. I could understand these variables being multicollinear with one another, because any person in this dataset from before 1993 would likely not have been radicalized on the internet given that the internet was released to the public in 1993. Internet_Radicalization has a VIF of 15, so I will remove it as a variable and check again.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>mod5 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Violent <span class="sc">~</span> Year_Exposure <span class="sc">+</span> Group_Membership <span class="sc">+</span> Role_Group <span class="sc">+</span> Social_Media_Frequency <span class="sc">+</span> Radical_Behaviors <span class="sc">+</span> Radical_Beliefs <span class="sc">+</span> Event_Influence1 <span class="sc">+</span> Radicalization_Sequence <span class="sc">+</span> Age <span class="sc">+</span> Marital_Status <span class="sc">+</span> Sex <span class="sc">+</span> Convert <span class="sc">+</span> Military <span class="sc">+</span> Abuse_Child <span class="sc">+</span> Psychological <span class="sc">+</span> Radical_Friend <span class="sc">+</span> Previous_Criminal_Activity <span class="sc">+</span> Other_Ideologies <span class="sc">+</span> Lone_Offender <span class="sc">+</span> Rad_Duration <span class="sc">+</span> Radicalization, pirus_filt, <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Violent ~ Year_Exposure + Group_Membership + Role_Group + 
+    Social_Media_Frequency + Radical_Behaviors + Radical_Beliefs + 
+    Event_Influence1 + Radicalization_Sequence + Age + Marital_Status + 
+    Sex + Convert + Military + Abuse_Child + Psychological + 
+    Radical_Friend + Previous_Criminal_Activity + Other_Ideologies + 
+    Lone_Offender + Rad_Duration + Radicalization, family = "binomial", 
+    data = pirus_filt)
+
+Coefficients:
+                                         Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)                            -1.189e+01  1.909e+01  -0.623 0.533416
+Year_Exposure                           2.473e-03  9.404e-03   0.263 0.792596
+Group_MembershipExtremist Group         6.278e-01  3.446e-01   1.822 0.068470
+Group_MembershipInformal Group          1.672e+00  3.682e-01   4.542 5.57e-06
+Group_MembershipUnknown                 9.034e-01  8.459e-01   1.068 0.285547
+Role_GroupLeader                       -1.638e-01  1.904e-01  -0.860 0.389690
+Role_GroupLoose Associate              -3.961e-01  2.461e-01  -1.610 0.107404
+Role_GroupUnknown                       2.242e-01  2.687e-01   0.834 0.404163
+Social_Media_FrequencyFrequently        7.605e-01  4.755e-01   1.599 0.109739
+Social_Media_FrequencyNot applicable   -3.337e-01  4.014e-01  -0.831 0.405755
+Social_Media_FrequencyOccasionally      7.097e-01  4.527e-01   1.568 0.116966
+Social_Media_FrequencyRarely           -9.783e-01  7.390e-01  -1.324 0.185571
+Social_Media_FrequencySporadically     -1.155e+00  5.773e-01  -2.000 0.045452
+Social_Media_FrequencyUnknown           1.032e-01  3.241e-01   0.318 0.750130
+Radical_BehaviorsConvert Others         4.907e-01  7.008e-01   0.700 0.483781
+Radical_BehaviorsDistancing            -1.435e+01  7.177e+02  -0.020 0.984051
+Radical_BehaviorsLegal Activism        -1.561e-01  5.004e-01  -0.312 0.755121
+Radical_BehaviorsLifestyle              1.203e+00  6.448e-01   1.866 0.062015
+Radical_BehaviorsMat/Fin Support        2.033e-01  5.874e-01   0.346 0.729237
+Radical_BehaviorsNon-Violent Plot       2.223e-01  4.317e-01   0.515 0.606588
+Radical_BehaviorsNone                  -1.414e+01  6.811e+02  -0.021 0.983438
+Radical_BehaviorsOperational Support    1.090e+00  4.722e-01   2.309 0.020971
+Radical_BehaviorsTraining               2.059e+00  6.096e-01   3.377 0.000732
+Radical_BehaviorsUnknown                1.497e+00  5.530e-01   2.706 0.006807
+Radical_BehaviorsViolent Plot           5.501e+00  4.859e-01  11.322  &lt; 2e-16
+Radical_BeliefsExposed                  7.885e-01  2.585e-01   3.051 0.002282
+Radical_BeliefsFull Knowledge           4.663e-01  2.660e-01   1.753 0.079542
+Radical_BeliefsNone                    -1.554e-01  1.266e+00  -0.123 0.902346
+Radical_BeliefsPursuit                 -3.408e-01  4.216e-01  -0.808 0.418845
+Radical_BeliefsShared Belief            5.191e-01  1.869e-01   2.777 0.005485
+Radical_BeliefsUnknown                 -5.762e-01  3.829e-01  -1.505 0.132382
+Event_Influence12020 US Election       -9.359e-01  7.469e-01  -1.253 0.210226
+Event_Influence19/11                   -1.199e+00  1.308e+00  -0.917 0.359249
+Event_Influence1Afghanistan/Iraq War   -1.271e+00  2.682e+00  -0.474 0.635406
+Event_Influence1Arab Spring             1.401e+01  1.455e+03   0.010 0.992317
+Event_Influence1Cold War                1.623e+01  1.455e+03   0.011 0.991102
+Event_Influence1COVID-19 Pandemic      -5.481e-01  8.377e-01  -0.654 0.512899
+Event_Influence1First Gulf War          9.692e+00  1.455e+03   0.007 0.994687
+Event_Influence1George Floyd Death      1.091e+00  8.233e-01   1.325 0.185143
+Event_Influence1None                   -3.480e-01  7.322e-01  -0.475 0.634585
+Event_Influence1Other                  -5.037e-01  8.084e-01  -0.623 0.533224
+Event_Influence1Ruby Ridge/Waco         3.432e-01  1.033e+00   0.332 0.739770
+Event_Influence1Unite the Right         3.186e-01  1.504e+00   0.212 0.832289
+Event_Influence1Unknown                -4.962e-01  7.488e-01  -0.663 0.507517
+Event_Influence1Vietnam War             1.501e-01  8.911e-01   0.168 0.866243
+Radicalization_SequenceBelief-first     9.889e-01  5.995e-01   1.650 0.099030
+Radicalization_SequenceSimultaneous     4.606e-01  6.785e-01   0.679 0.497197
+Radicalization_SequenceUnknown          1.255e+00  6.039e-01   2.078 0.037693
+Age                                     4.687e-03  3.027e-03   1.548 0.121594
+Marital_StatusMarried                  -1.358e-01  2.916e-01  -0.466 0.641522
+Marital_StatusSingle (NM)              -2.997e-01  2.941e-01  -1.019 0.308108
+Marital_StatusUnknown                  -2.028e-02  2.976e-01  -0.068 0.945683
+Marital_StatusWidowed                  -1.371e-01  2.031e+00  -0.067 0.946199
+SexMale                                 5.524e-01  2.374e-01   2.327 0.019955
+ConvertBefore                           2.933e+00  1.748e+00   1.678 0.093376
+ConvertDuring                           7.707e-01  1.746e+00   0.441 0.659000
+ConvertNo                               2.824e+00  1.562e+00   1.808 0.070610
+ConvertUnknown                          9.172e-01  2.272e+00   0.404 0.686465
+MilitaryUnknown                        -1.353e-02  3.431e-01  -0.039 0.968547
+MilitaryYes                            -9.805e-02  2.071e-01  -0.473 0.635887
+Abuse_ChildYes (both)                  -2.507e+00  1.140e+00  -2.199 0.027865
+Abuse_ChildYes (family)                -1.183e+00  5.295e-01  -2.234 0.025457
+Abuse_ChildYes (non-family)            -1.077e+00  7.198e-01  -1.496 0.134646
+PsychologicalNone                       4.677e-02  3.358e-01   0.139 0.889236
+PsychologicalSpeculated                 9.513e-01  3.830e-01   2.484 0.013006
+Radical_FriendNo                        2.276e-01  4.072e-01   0.559 0.576182
+Radical_FriendNonviolent               -5.564e-01  3.034e-01  -1.834 0.066653
+Radical_FriendUnknown                   9.144e-02  2.748e-01   0.333 0.739322
+Radical_FriendViolent                   9.736e-01  2.872e-01   3.389 0.000700
+Previous_Criminal_ActivityMisdemeanors -4.674e-02  3.595e-01  -0.130 0.896532
+Previous_Criminal_ActivityNone         -1.273e-01  2.929e-01  -0.435 0.663867
+Previous_Criminal_ActivityUnknown      -7.356e-01  3.119e-01  -2.358 0.018361
+Previous_Criminal_ActivityViolent       4.233e-01  3.339e-01   1.268 0.204920
+Other_IdeologiesUnknown                 1.760e+01  5.867e+02   0.030 0.976065
+Other_IdeologiesYes                     5.226e-01  4.473e-01   1.168 0.242666
+Lone_OffenderYes                        2.077e-01  2.004e-01   1.037 0.299861
+Rad_DurationMedium                     -1.050e-01  2.600e-01  -0.404 0.686319
+Rad_DurationShort                      -1.079e-02  2.812e-01  -0.038 0.969391
+Rad_DurationUnknown                    -2.984e-01  2.348e-01  -1.271 0.203755
+RadicalizationFar Right                 8.210e-01  2.393e-01   3.431 0.000601
+RadicalizationSingle Issue              7.342e-01  3.216e-01   2.283 0.022415
+                                          
+(Intercept)                               
+Year_Exposure                             
+Group_MembershipExtremist Group        .  
+Group_MembershipInformal Group         ***
+Group_MembershipUnknown                   
+Role_GroupLeader                          
+Role_GroupLoose Associate                 
+Role_GroupUnknown                         
+Social_Media_FrequencyFrequently          
+Social_Media_FrequencyNot applicable      
+Social_Media_FrequencyOccasionally        
+Social_Media_FrequencyRarely              
+Social_Media_FrequencySporadically     *  
+Social_Media_FrequencyUnknown             
+Radical_BehaviorsConvert Others           
+Radical_BehaviorsDistancing               
+Radical_BehaviorsLegal Activism           
+Radical_BehaviorsLifestyle             .  
+Radical_BehaviorsMat/Fin Support          
+Radical_BehaviorsNon-Violent Plot         
+Radical_BehaviorsNone                     
+Radical_BehaviorsOperational Support   *  
+Radical_BehaviorsTraining              ***
+Radical_BehaviorsUnknown               ** 
+Radical_BehaviorsViolent Plot          ***
+Radical_BeliefsExposed                 ** 
+Radical_BeliefsFull Knowledge          .  
+Radical_BeliefsNone                       
+Radical_BeliefsPursuit                    
+Radical_BeliefsShared Belief           ** 
+Radical_BeliefsUnknown                    
+Event_Influence12020 US Election          
+Event_Influence19/11                      
+Event_Influence1Afghanistan/Iraq War      
+Event_Influence1Arab Spring               
+Event_Influence1Cold War                  
+Event_Influence1COVID-19 Pandemic         
+Event_Influence1First Gulf War            
+Event_Influence1George Floyd Death        
+Event_Influence1None                      
+Event_Influence1Other                     
+Event_Influence1Ruby Ridge/Waco           
+Event_Influence1Unite the Right           
+Event_Influence1Unknown                   
+Event_Influence1Vietnam War               
+Radicalization_SequenceBelief-first    .  
+Radicalization_SequenceSimultaneous       
+Radicalization_SequenceUnknown         *  
+Age                                       
+Marital_StatusMarried                     
+Marital_StatusSingle (NM)                 
+Marital_StatusUnknown                     
+Marital_StatusWidowed                     
+SexMale                                *  
+ConvertBefore                          .  
+ConvertDuring                             
+ConvertNo                              .  
+ConvertUnknown                            
+MilitaryUnknown                           
+MilitaryYes                               
+Abuse_ChildYes (both)                  *  
+Abuse_ChildYes (family)                *  
+Abuse_ChildYes (non-family)               
+PsychologicalNone                         
+PsychologicalSpeculated                *  
+Radical_FriendNo                          
+Radical_FriendNonviolent               .  
+Radical_FriendUnknown                     
+Radical_FriendViolent                  ***
+Previous_Criminal_ActivityMisdemeanors    
+Previous_Criminal_ActivityNone            
+Previous_Criminal_ActivityUnknown      *  
+Previous_Criminal_ActivityViolent         
+Other_IdeologiesUnknown                   
+Other_IdeologiesYes                       
+Lone_OffenderYes                          
+Rad_DurationMedium                        
+Rad_DurationShort                         
+Rad_DurationUnknown                       
+RadicalizationFar Right                ***
+RadicalizationSingle Issue             *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 3036.6  on 2197  degrees of freedom
+Residual deviance: 1362.5  on 2117  degrees of freedom
+AIC: 1524.5
+
+Number of Fisher Scoring iterations: 14</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">VIF</span>(mod5)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                               GVIF Df GVIF^(1/(2*Df))
+Year_Exposure              5.023884  1        2.241402
+Group_Membership           2.043406  3        1.126486
+Role_Group                 1.950219  3        1.117757
+Social_Media_Frequency     5.613350  6        1.154610
+Radical_Behaviors          3.700867 11        1.061285
+Radical_Beliefs            2.200201  6        1.067920
+Event_Influence1           6.269815 14        1.067759
+Radicalization_Sequence    1.649421  3        1.086981
+Age                        1.208566  1        1.099348
+Marital_Status             2.023526  4        1.092103
+Sex                        1.163966  1        1.078872
+Convert                    1.354570  4        1.038664
+Military                   1.993519  2        1.188242
+Abuse_Child                1.415894  3        1.059673
+Psychological              1.381101  2        1.084068
+Radical_Friend             1.906931  4        1.084031
+Previous_Criminal_Activity 2.283479  4        1.108727
+Other_Ideologies           1.074746  2        1.018184
+Lone_Offender              1.650284  1        1.284634
+Rad_Duration               2.042608  3        1.126413
+Radicalization             2.033601  2        1.194171</code></pre>
+</div>
+</div>
+<p>The VIFs all decreased to under 10, but Event Influence now has a VIF of over 6, and Year_Exposure has a VIF slightly above 5. It seems reasonable to think that these variables might be multicollinear, as individuals that took to violent extremism because of a certain event would most likely act in a short period after that event. This seems like it will be the last VIF test with VIFs over 5, so hopefully this can remove any evidence of multicollinearity in my model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>mod6 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Violent <span class="sc">~</span> Year_Exposure <span class="sc">+</span> Group_Membership <span class="sc">+</span> Role_Group <span class="sc">+</span> Social_Media_Frequency <span class="sc">+</span> Radical_Behaviors <span class="sc">+</span> Radical_Beliefs <span class="sc">+</span> Radicalization_Sequence <span class="sc">+</span> Age <span class="sc">+</span> Marital_Status <span class="sc">+</span> Sex <span class="sc">+</span> Convert <span class="sc">+</span> Military <span class="sc">+</span> Abuse_Child <span class="sc">+</span> Psychological <span class="sc">+</span> Radical_Friend <span class="sc">+</span> Previous_Criminal_Activity <span class="sc">+</span> Other_Ideologies <span class="sc">+</span> Lone_Offender <span class="sc">+</span> Rad_Duration <span class="sc">+</span> Radicalization, pirus_filt, <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Violent ~ Year_Exposure + Group_Membership + Role_Group + 
+    Social_Media_Frequency + Radical_Behaviors + Radical_Beliefs + 
+    Radicalization_Sequence + Age + Marital_Status + Sex + Convert + 
+    Military + Abuse_Child + Psychological + Radical_Friend + 
+    Previous_Criminal_Activity + Other_Ideologies + Lone_Offender + 
+    Rad_Duration + Radicalization, family = "binomial", data = pirus_filt)
+
+Coefficients:
+                                         Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)                            -8.021e+00  1.755e+01  -0.457 0.647651
+Year_Exposure                           6.948e-04  8.675e-03   0.080 0.936163
+Group_MembershipExtremist Group         6.355e-01  3.389e-01   1.875 0.060787
+Group_MembershipInformal Group          1.722e+00  3.630e-01   4.743  2.1e-06
+Group_MembershipUnknown                 1.188e+00  8.328e-01   1.426 0.153768
+Role_GroupLeader                       -1.689e-01  1.877e-01  -0.900 0.368115
+Role_GroupLoose Associate              -4.205e-01  2.395e-01  -1.756 0.079118
+Role_GroupUnknown                       1.981e-01  2.619e-01   0.756 0.449387
+Social_Media_FrequencyFrequently        6.508e-01  4.611e-01   1.411 0.158196
+Social_Media_FrequencyNot applicable   -3.669e-01  3.877e-01  -0.946 0.343960
+Social_Media_FrequencyOccasionally      7.443e-01  4.415e-01   1.686 0.091806
+Social_Media_FrequencyRarely           -8.995e-01  7.328e-01  -1.227 0.219687
+Social_Media_FrequencySporadically     -1.082e+00  5.654e-01  -1.913 0.055712
+Social_Media_FrequencyUnknown           8.306e-02  3.104e-01   0.268 0.789004
+Radical_BehaviorsConvert Others         1.930e-01  6.838e-01   0.282 0.777793
+Radical_BehaviorsDistancing            -1.473e+01  7.194e+02  -0.020 0.983666
+Radical_BehaviorsLegal Activism        -3.941e-01  4.806e-01  -0.820 0.412271
+Radical_BehaviorsLifestyle              9.886e-01  6.282e-01   1.574 0.115559
+Radical_BehaviorsMat/Fin Support       -1.205e-01  5.729e-01  -0.210 0.833402
+Radical_BehaviorsNon-Violent Plot      -1.243e-01  4.120e-01  -0.302 0.762868
+Radical_BehaviorsNone                  -1.443e+01  6.721e+02  -0.021 0.982873
+Radical_BehaviorsOperational Support    7.928e-01  4.528e-01   1.751 0.079971
+Radical_BehaviorsTraining               1.675e+00  5.893e-01   2.842 0.004481
+Radical_BehaviorsUnknown                1.164e+00  5.368e-01   2.167 0.030203
+Radical_BehaviorsViolent Plot           5.113e+00  4.627e-01  11.051  &lt; 2e-16
+Radical_BeliefsExposed                  7.067e-01  2.517e-01   2.807 0.004999
+Radical_BeliefsFull Knowledge           3.567e-01  2.591e-01   1.377 0.168666
+Radical_BeliefsNone                    -4.465e-01  1.158e+00  -0.386 0.699829
+Radical_BeliefsPursuit                 -4.540e-01  4.119e-01  -1.102 0.270365
+Radical_BeliefsShared Belief            4.716e-01  1.820e-01   2.592 0.009553
+Radical_BeliefsUnknown                 -6.201e-01  3.808e-01  -1.628 0.103478
+Radicalization_SequenceBelief-first     8.865e-01  6.122e-01   1.448 0.147605
+Radicalization_SequenceSimultaneous     3.985e-01  6.882e-01   0.579 0.562564
+Radicalization_SequenceUnknown          1.194e+00  6.176e-01   1.933 0.053238
+Age                                     4.451e-03  2.969e-03   1.499 0.133888
+Marital_StatusMarried                  -9.075e-02  2.866e-01  -0.317 0.751550
+Marital_StatusSingle (NM)              -1.256e-01  2.857e-01  -0.439 0.660360
+Marital_StatusUnknown                   6.774e-02  2.919e-01   0.232 0.816469
+Marital_StatusWidowed                  -2.716e-02  2.085e+00  -0.013 0.989610
+SexMale                                 5.954e-01  2.332e-01   2.554 0.010663
+ConvertBefore                           3.159e+00  1.696e+00   1.862 0.062610
+ConvertDuring                           7.155e-01  1.751e+00   0.409 0.682776
+ConvertNo                               2.743e+00  1.558e+00   1.760 0.078327
+ConvertUnknown                          7.256e-01  2.259e+00   0.321 0.748058
+MilitaryUnknown                        -7.949e-02  3.360e-01  -0.237 0.813011
+MilitaryYes                            -1.097e-01  2.025e-01  -0.542 0.588089
+Abuse_ChildYes (both)                  -2.327e+00  1.154e+00  -2.017 0.043682
+Abuse_ChildYes (family)                -1.133e+00  5.155e-01  -2.197 0.028021
+Abuse_ChildYes (non-family)            -1.006e+00  6.978e-01  -1.441 0.149580
+PsychologicalNone                      -1.214e-01  3.214e-01  -0.378 0.705634
+PsychologicalSpeculated                 7.897e-01  3.693e-01   2.138 0.032494
+Radical_FriendNo                        3.352e-01  3.985e-01   0.841 0.400189
+Radical_FriendNonviolent               -5.577e-01  2.962e-01  -1.883 0.059750
+Radical_FriendUnknown                   1.147e-01  2.687e-01   0.427 0.669485
+Radical_FriendViolent                   9.921e-01  2.812e-01   3.528 0.000418
+Previous_Criminal_ActivityMisdemeanors -8.070e-02  3.475e-01  -0.232 0.816345
+Previous_Criminal_ActivityNone         -1.109e-01  2.883e-01  -0.385 0.700408
+Previous_Criminal_ActivityUnknown      -7.282e-01  3.052e-01  -2.386 0.017037
+Previous_Criminal_ActivityViolent       4.406e-01  3.284e-01   1.342 0.179745
+Other_IdeologiesUnknown                 1.737e+01  6.007e+02   0.029 0.976937
+Other_IdeologiesYes                     5.819e-01  4.317e-01   1.348 0.177686
+Lone_OffenderYes                        1.359e-01  1.947e-01   0.698 0.485180
+Rad_DurationMedium                     -8.272e-02  2.528e-01  -0.327 0.743489
+Rad_DurationShort                      -7.392e-02  2.682e-01  -0.276 0.782839
+Rad_DurationUnknown                    -3.062e-01  2.280e-01  -1.343 0.179251
+RadicalizationFar Right                 6.361e-01  2.276e-01   2.795 0.005197
+RadicalizationSingle Issue              5.724e-01  3.088e-01   1.854 0.063728
+                                          
+(Intercept)                               
+Year_Exposure                             
+Group_MembershipExtremist Group        .  
+Group_MembershipInformal Group         ***
+Group_MembershipUnknown                   
+Role_GroupLeader                          
+Role_GroupLoose Associate              .  
+Role_GroupUnknown                         
+Social_Media_FrequencyFrequently          
+Social_Media_FrequencyNot applicable      
+Social_Media_FrequencyOccasionally     .  
+Social_Media_FrequencyRarely              
+Social_Media_FrequencySporadically     .  
+Social_Media_FrequencyUnknown             
+Radical_BehaviorsConvert Others           
+Radical_BehaviorsDistancing               
+Radical_BehaviorsLegal Activism           
+Radical_BehaviorsLifestyle                
+Radical_BehaviorsMat/Fin Support          
+Radical_BehaviorsNon-Violent Plot         
+Radical_BehaviorsNone                     
+Radical_BehaviorsOperational Support   .  
+Radical_BehaviorsTraining              ** 
+Radical_BehaviorsUnknown               *  
+Radical_BehaviorsViolent Plot          ***
+Radical_BeliefsExposed                 ** 
+Radical_BeliefsFull Knowledge             
+Radical_BeliefsNone                       
+Radical_BeliefsPursuit                    
+Radical_BeliefsShared Belief           ** 
+Radical_BeliefsUnknown                    
+Radicalization_SequenceBelief-first       
+Radicalization_SequenceSimultaneous       
+Radicalization_SequenceUnknown         .  
+Age                                       
+Marital_StatusMarried                     
+Marital_StatusSingle (NM)                 
+Marital_StatusUnknown                     
+Marital_StatusWidowed                     
+SexMale                                *  
+ConvertBefore                          .  
+ConvertDuring                             
+ConvertNo                              .  
+ConvertUnknown                            
+MilitaryUnknown                           
+MilitaryYes                               
+Abuse_ChildYes (both)                  *  
+Abuse_ChildYes (family)                *  
+Abuse_ChildYes (non-family)               
+PsychologicalNone                         
+PsychologicalSpeculated                *  
+Radical_FriendNo                          
+Radical_FriendNonviolent               .  
+Radical_FriendUnknown                     
+Radical_FriendViolent                  ***
+Previous_Criminal_ActivityMisdemeanors    
+Previous_Criminal_ActivityNone            
+Previous_Criminal_ActivityUnknown      *  
+Previous_Criminal_ActivityViolent         
+Other_IdeologiesUnknown                   
+Other_IdeologiesYes                       
+Lone_OffenderYes                          
+Rad_DurationMedium                        
+Rad_DurationShort                         
+Rad_DurationUnknown                       
+RadicalizationFar Right                ** 
+RadicalizationSingle Issue             .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 3036.6  on 2197  degrees of freedom
+Residual deviance: 1392.9  on 2131  degrees of freedom
+AIC: 1526.9
+
+Number of Fisher Scoring iterations: 14</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">VIF</span>(mod6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                               GVIF Df GVIF^(1/(2*Df))
+Year_Exposure              4.359513  1        2.087945
+Group_Membership           1.846608  3        1.107633
+Role_Group                 1.787306  3        1.101623
+Social_Media_Frequency     5.107648  6        1.145562
+Radical_Behaviors          3.083499 11        1.052517
+Radical_Beliefs            2.025629  6        1.060588
+Radicalization_Sequence    1.540827  3        1.074713
+Age                        1.202437  1        1.096557
+Marital_Status             1.876895  4        1.081882
+Sex                        1.151940  1        1.073285
+Convert                    1.303975  4        1.033734
+Military                   1.938828  2        1.180008
+Abuse_Child                1.309374  3        1.045949
+Psychological              1.349353  2        1.077783
+Radical_Friend             1.793278  4        1.075737
+Previous_Criminal_Activity 2.093885  4        1.096779
+Other_Ideologies           1.050751  2        1.012453
+Lone_Offender              1.600152  1        1.264971
+Rad_Duration               1.812439  3        1.104190
+Radicalization             1.801375  2        1.158513</code></pre>
+</div>
+</div>
+<p>Social_Media_Frequency’s VIF is at 5.1, so there still is moderate evidence to suggest that multicollinearity is present in my model. I’m going to test this model to see if it is statistically significant and check if the assumption of the model being a good fit for the data are not violated before determining whether or not I should remove it. It would make sense if Social_Media_Frequency had some multicollinearity with Year_Exposure for similar reasons to why Year_Exposure was multicollinear with Internet_Radicalization. I feel like social media could have an impact on radicalization in general, given that it can increase access to communities where radical and extremist rhetoric is propagated. That does not necessarily mean that those groups are all inciting or encouraging violent extremism though.</p>
+<p>Now, my regression line (listing factor types, not all levels) is as follows: <span class="math inline">\(\text{log}(\hat{Violent}) = \beta_0 + \beta_1 YearExposure + \beta_2 GroupMembership + \beta_3 RoleGroup + \beta_4 SocialMediaFrequency + \beta_5 RadicalBehaviors \\+ \beta_6 RadicalBeliefs + \beta_7 RadicalizationSequence + \beta_8 Age + \beta_9 MaritalStatus + \beta_{10} Sex + \beta_{11} Convert + \beta_{12} Military \\+ \beta_{13} AbuseChild + \beta_{14} Psychological + \beta_{15} RadicalFriend + \beta_{16} PreviousCriminalActivity + \beta_{17} OtherIdeologies \\+ \beta_{18} Lone Offender + \beta_{19} RadDuration + \beta_{20} Radicalization\)</span></p>
+<p>I’m going to test this model for statistical significance at <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<p>Reduced Model: <span class="math inline">\(\text{log}(\hat{Violent}) = \beta_0\)</span></p>
+<p>Full Model: <span class="math inline">\(\text{log}(\hat{Violent}) = \beta_0 + \beta_1 YearExposure + \beta_2 GroupMembership + \beta_3 RoleGroup + \beta_4 SocialMediaFrequency + \beta_5 RadicalBehaviors \\+ \beta_6 RadicalBeliefs + \beta_7 RadicalizationSequence + \beta_8 Age + \beta_9 MaritalStatus + \beta_{10} Sex + \beta_{11} Convert + \beta_{12} Military \\+ \beta_{13} AbuseChild + \beta_{14} Psychological + \beta_{15} RadicalFriend + \beta_{16} PreviousCriminalActivity + \beta_{17} OtherIdeologies \\+ \beta_{18} Lone Offender + \beta_{19} RadDuration + \beta_{20} Radicalization\)</span></p>
+<p><span class="math display">\[
+H_0: \beta_j = 0 : j = 1,\cdots, 20\\H_a: \exists \beta_j \neq 0: j = 1, \cdots, 20
+\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Violent ~ Year_Exposure + Group_Membership + Role_Group + 
+    Social_Media_Frequency + Radical_Behaviors + Radical_Beliefs + 
+    Radicalization_Sequence + Age + Marital_Status + Sex + Convert + 
+    Military + Abuse_Child + Psychological + Radical_Friend + 
+    Previous_Criminal_Activity + Other_Ideologies + Lone_Offender + 
+    Rad_Duration + Radicalization, family = "binomial", data = pirus_filt)
+
+Coefficients:
+                                         Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)                            -8.021e+00  1.755e+01  -0.457 0.647651
+Year_Exposure                           6.948e-04  8.675e-03   0.080 0.936163
+Group_MembershipExtremist Group         6.355e-01  3.389e-01   1.875 0.060787
+Group_MembershipInformal Group          1.722e+00  3.630e-01   4.743  2.1e-06
+Group_MembershipUnknown                 1.188e+00  8.328e-01   1.426 0.153768
+Role_GroupLeader                       -1.689e-01  1.877e-01  -0.900 0.368115
+Role_GroupLoose Associate              -4.205e-01  2.395e-01  -1.756 0.079118
+Role_GroupUnknown                       1.981e-01  2.619e-01   0.756 0.449387
+Social_Media_FrequencyFrequently        6.508e-01  4.611e-01   1.411 0.158196
+Social_Media_FrequencyNot applicable   -3.669e-01  3.877e-01  -0.946 0.343960
+Social_Media_FrequencyOccasionally      7.443e-01  4.415e-01   1.686 0.091806
+Social_Media_FrequencyRarely           -8.995e-01  7.328e-01  -1.227 0.219687
+Social_Media_FrequencySporadically     -1.082e+00  5.654e-01  -1.913 0.055712
+Social_Media_FrequencyUnknown           8.306e-02  3.104e-01   0.268 0.789004
+Radical_BehaviorsConvert Others         1.930e-01  6.838e-01   0.282 0.777793
+Radical_BehaviorsDistancing            -1.473e+01  7.194e+02  -0.020 0.983666
+Radical_BehaviorsLegal Activism        -3.941e-01  4.806e-01  -0.820 0.412271
+Radical_BehaviorsLifestyle              9.886e-01  6.282e-01   1.574 0.115559
+Radical_BehaviorsMat/Fin Support       -1.205e-01  5.729e-01  -0.210 0.833402
+Radical_BehaviorsNon-Violent Plot      -1.243e-01  4.120e-01  -0.302 0.762868
+Radical_BehaviorsNone                  -1.443e+01  6.721e+02  -0.021 0.982873
+Radical_BehaviorsOperational Support    7.928e-01  4.528e-01   1.751 0.079971
+Radical_BehaviorsTraining               1.675e+00  5.893e-01   2.842 0.004481
+Radical_BehaviorsUnknown                1.164e+00  5.368e-01   2.167 0.030203
+Radical_BehaviorsViolent Plot           5.113e+00  4.627e-01  11.051  &lt; 2e-16
+Radical_BeliefsExposed                  7.067e-01  2.517e-01   2.807 0.004999
+Radical_BeliefsFull Knowledge           3.567e-01  2.591e-01   1.377 0.168666
+Radical_BeliefsNone                    -4.465e-01  1.158e+00  -0.386 0.699829
+Radical_BeliefsPursuit                 -4.540e-01  4.119e-01  -1.102 0.270365
+Radical_BeliefsShared Belief            4.716e-01  1.820e-01   2.592 0.009553
+Radical_BeliefsUnknown                 -6.201e-01  3.808e-01  -1.628 0.103478
+Radicalization_SequenceBelief-first     8.865e-01  6.122e-01   1.448 0.147605
+Radicalization_SequenceSimultaneous     3.985e-01  6.882e-01   0.579 0.562564
+Radicalization_SequenceUnknown          1.194e+00  6.176e-01   1.933 0.053238
+Age                                     4.451e-03  2.969e-03   1.499 0.133888
+Marital_StatusMarried                  -9.075e-02  2.866e-01  -0.317 0.751550
+Marital_StatusSingle (NM)              -1.256e-01  2.857e-01  -0.439 0.660360
+Marital_StatusUnknown                   6.774e-02  2.919e-01   0.232 0.816469
+Marital_StatusWidowed                  -2.716e-02  2.085e+00  -0.013 0.989610
+SexMale                                 5.954e-01  2.332e-01   2.554 0.010663
+ConvertBefore                           3.159e+00  1.696e+00   1.862 0.062610
+ConvertDuring                           7.155e-01  1.751e+00   0.409 0.682776
+ConvertNo                               2.743e+00  1.558e+00   1.760 0.078327
+ConvertUnknown                          7.256e-01  2.259e+00   0.321 0.748058
+MilitaryUnknown                        -7.949e-02  3.360e-01  -0.237 0.813011
+MilitaryYes                            -1.097e-01  2.025e-01  -0.542 0.588089
+Abuse_ChildYes (both)                  -2.327e+00  1.154e+00  -2.017 0.043682
+Abuse_ChildYes (family)                -1.133e+00  5.155e-01  -2.197 0.028021
+Abuse_ChildYes (non-family)            -1.006e+00  6.978e-01  -1.441 0.149580
+PsychologicalNone                      -1.214e-01  3.214e-01  -0.378 0.705634
+PsychologicalSpeculated                 7.897e-01  3.693e-01   2.138 0.032494
+Radical_FriendNo                        3.352e-01  3.985e-01   0.841 0.400189
+Radical_FriendNonviolent               -5.577e-01  2.962e-01  -1.883 0.059750
+Radical_FriendUnknown                   1.147e-01  2.687e-01   0.427 0.669485
+Radical_FriendViolent                   9.921e-01  2.812e-01   3.528 0.000418
+Previous_Criminal_ActivityMisdemeanors -8.070e-02  3.475e-01  -0.232 0.816345
+Previous_Criminal_ActivityNone         -1.109e-01  2.883e-01  -0.385 0.700408
+Previous_Criminal_ActivityUnknown      -7.282e-01  3.052e-01  -2.386 0.017037
+Previous_Criminal_ActivityViolent       4.406e-01  3.284e-01   1.342 0.179745
+Other_IdeologiesUnknown                 1.737e+01  6.007e+02   0.029 0.976937
+Other_IdeologiesYes                     5.819e-01  4.317e-01   1.348 0.177686
+Lone_OffenderYes                        1.359e-01  1.947e-01   0.698 0.485180
+Rad_DurationMedium                     -8.272e-02  2.528e-01  -0.327 0.743489
+Rad_DurationShort                      -7.392e-02  2.682e-01  -0.276 0.782839
+Rad_DurationUnknown                    -3.062e-01  2.280e-01  -1.343 0.179251
+RadicalizationFar Right                 6.361e-01  2.276e-01   2.795 0.005197
+RadicalizationSingle Issue              5.724e-01  3.088e-01   1.854 0.063728
+                                          
+(Intercept)                               
+Year_Exposure                             
+Group_MembershipExtremist Group        .  
+Group_MembershipInformal Group         ***
+Group_MembershipUnknown                   
+Role_GroupLeader                          
+Role_GroupLoose Associate              .  
+Role_GroupUnknown                         
+Social_Media_FrequencyFrequently          
+Social_Media_FrequencyNot applicable      
+Social_Media_FrequencyOccasionally     .  
+Social_Media_FrequencyRarely              
+Social_Media_FrequencySporadically     .  
+Social_Media_FrequencyUnknown             
+Radical_BehaviorsConvert Others           
+Radical_BehaviorsDistancing               
+Radical_BehaviorsLegal Activism           
+Radical_BehaviorsLifestyle                
+Radical_BehaviorsMat/Fin Support          
+Radical_BehaviorsNon-Violent Plot         
+Radical_BehaviorsNone                     
+Radical_BehaviorsOperational Support   .  
+Radical_BehaviorsTraining              ** 
+Radical_BehaviorsUnknown               *  
+Radical_BehaviorsViolent Plot          ***
+Radical_BeliefsExposed                 ** 
+Radical_BeliefsFull Knowledge             
+Radical_BeliefsNone                       
+Radical_BeliefsPursuit                    
+Radical_BeliefsShared Belief           ** 
+Radical_BeliefsUnknown                    
+Radicalization_SequenceBelief-first       
+Radicalization_SequenceSimultaneous       
+Radicalization_SequenceUnknown         .  
+Age                                       
+Marital_StatusMarried                     
+Marital_StatusSingle (NM)                 
+Marital_StatusUnknown                     
+Marital_StatusWidowed                     
+SexMale                                *  
+ConvertBefore                          .  
+ConvertDuring                             
+ConvertNo                              .  
+ConvertUnknown                            
+MilitaryUnknown                           
+MilitaryYes                               
+Abuse_ChildYes (both)                  *  
+Abuse_ChildYes (family)                *  
+Abuse_ChildYes (non-family)               
+PsychologicalNone                         
+PsychologicalSpeculated                *  
+Radical_FriendNo                          
+Radical_FriendNonviolent               .  
+Radical_FriendUnknown                     
+Radical_FriendViolent                  ***
+Previous_Criminal_ActivityMisdemeanors    
+Previous_Criminal_ActivityNone            
+Previous_Criminal_ActivityUnknown      *  
+Previous_Criminal_ActivityViolent         
+Other_IdeologiesUnknown                   
+Other_IdeologiesYes                       
+Lone_OffenderYes                          
+Rad_DurationMedium                        
+Rad_DurationShort                         
+Rad_DurationUnknown                       
+RadicalizationFar Right                ** 
+RadicalizationSingle Issue             .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 3036.6  on 2197  degrees of freedom
+Residual deviance: 1392.9  on 2131  degrees of freedom
+AIC: 1526.9
+
+Number of Fisher Scoring iterations: 14</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>chi2 <span class="ot">&lt;-</span> <span class="fu">summary</span>(mod6)<span class="sc">$</span>null <span class="sc">-</span> <span class="fu">summary</span>(mod6)<span class="sc">$</span>deviance</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pchisq</span>(chi2, <span class="dv">66</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 9.142375e-300</code></pre>
+</div>
+</div>
+<p><span class="math inline">\(\chi^2 = 1643.625\)</span>, <span class="math inline">\(p = 9.14 \times 10^{-300}\)</span>, so therefore we reject the null hypothesis and conclude that a logistic regression model predicting the log-likelihood that a political extremist in the United States becomes violent by the year they were exposed in, whether or not they were in a group, what their role in a group was, how frequently they used social media, whether or not they exhibited radical behaviors and beliefs, the radicalization sequence they underwent, their age, their marital status, their sex, whether or not they were a religious convert, whether or not they were in the military, whether or not they were abused as a child, their psychological disorder status, whether or not they have a radical friend, if they have a criminal record, if they espoused or followed other ideologies previously, whether or not they were a lone wolf, the duration of their radicalization, and the type of radical extremism they followed is statistically significant.</p>
+<p>I’m now going to look at the Pearson residuals plot to see if the two lines on the plot have become more parallel to one another, and perform a Hosmer-Lemeshow test to determine whether my model fits the data well or not.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(mod6), <span class="fu">residuals.glm</span>(mod6), <span class="at">type =</span> <span class="st">"pearson"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in plot.xy(xy, type, ...): plot type 'pearson' will be truncated to
+first character</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Stat_408_proj_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hoslem.test</span>(mod6<span class="sc">$</span>y, <span class="fu">fitted</span>(mod6))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Hosmer and Lemeshow goodness of fit (GOF) test
+
+data:  mod6$y, fitted(mod6)
+X-squared = 27.355, df = 8, p-value = 0.0006139</code></pre>
+</div>
+</div>
+<p>In looking at the Pearson residuals plot, the residual lines on the plot are roughly parallel, but there still is a significant tail on the line below 0. This plot leads me to believe the fit will still be pretty poor.</p>
+<p>The resulting p-value from the Hosmer-Lemeshow test is 0.0006, which is less than <span class="math inline">\(\alpha = 0.05\)</span>, so therefore we reject the null hypothesis and conclude that a logistic regression model predicting the log-likelihood that a political extremist in the United States becomes violent by the year they were exposed in, whether or not they were in a group, what their role in a group was, how frequently they used social media, whether or not they exhibited radical behaviors and beliefs, the radicalization sequence they underwent, their age, their marital status, their sex, whether or not they were a religious convert, whether or not they were in the military, whether or not they were abused as a child, their psychological disorder status, whether or not they have a radical friend, if they have a criminal record, if they espoused or followed other ideologies previously, whether or not they were a lone wolf, the duration of their radicalization, and the type of radical extremism they followed is a poor fit for the data. I’m going to investigate the regression coefficients of this model to see if there are any suspiciously high <span class="math inline">\(\beta\)</span>s in the model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = Violent ~ Year_Exposure + Group_Membership + Role_Group + 
+    Social_Media_Frequency + Radical_Behaviors + Radical_Beliefs + 
+    Radicalization_Sequence + Age + Marital_Status + Sex + Convert + 
+    Military + Abuse_Child + Psychological + Radical_Friend + 
+    Previous_Criminal_Activity + Other_Ideologies + Lone_Offender + 
+    Rad_Duration + Radicalization, family = "binomial", data = pirus_filt)
+
+Coefficients:
+                                         Estimate Std. Error z value Pr(&gt;|z|)
+(Intercept)                            -8.021e+00  1.755e+01  -0.457 0.647651
+Year_Exposure                           6.948e-04  8.675e-03   0.080 0.936163
+Group_MembershipExtremist Group         6.355e-01  3.389e-01   1.875 0.060787
+Group_MembershipInformal Group          1.722e+00  3.630e-01   4.743  2.1e-06
+Group_MembershipUnknown                 1.188e+00  8.328e-01   1.426 0.153768
+Role_GroupLeader                       -1.689e-01  1.877e-01  -0.900 0.368115
+Role_GroupLoose Associate              -4.205e-01  2.395e-01  -1.756 0.079118
+Role_GroupUnknown                       1.981e-01  2.619e-01   0.756 0.449387
+Social_Media_FrequencyFrequently        6.508e-01  4.611e-01   1.411 0.158196
+Social_Media_FrequencyNot applicable   -3.669e-01  3.877e-01  -0.946 0.343960
+Social_Media_FrequencyOccasionally      7.443e-01  4.415e-01   1.686 0.091806
+Social_Media_FrequencyRarely           -8.995e-01  7.328e-01  -1.227 0.219687
+Social_Media_FrequencySporadically     -1.082e+00  5.654e-01  -1.913 0.055712
+Social_Media_FrequencyUnknown           8.306e-02  3.104e-01   0.268 0.789004
+Radical_BehaviorsConvert Others         1.930e-01  6.838e-01   0.282 0.777793
+Radical_BehaviorsDistancing            -1.473e+01  7.194e+02  -0.020 0.983666
+Radical_BehaviorsLegal Activism        -3.941e-01  4.806e-01  -0.820 0.412271
+Radical_BehaviorsLifestyle              9.886e-01  6.282e-01   1.574 0.115559
+Radical_BehaviorsMat/Fin Support       -1.205e-01  5.729e-01  -0.210 0.833402
+Radical_BehaviorsNon-Violent Plot      -1.243e-01  4.120e-01  -0.302 0.762868
+Radical_BehaviorsNone                  -1.443e+01  6.721e+02  -0.021 0.982873
+Radical_BehaviorsOperational Support    7.928e-01  4.528e-01   1.751 0.079971
+Radical_BehaviorsTraining               1.675e+00  5.893e-01   2.842 0.004481
+Radical_BehaviorsUnknown                1.164e+00  5.368e-01   2.167 0.030203
+Radical_BehaviorsViolent Plot           5.113e+00  4.627e-01  11.051  &lt; 2e-16
+Radical_BeliefsExposed                  7.067e-01  2.517e-01   2.807 0.004999
+Radical_BeliefsFull Knowledge           3.567e-01  2.591e-01   1.377 0.168666
+Radical_BeliefsNone                    -4.465e-01  1.158e+00  -0.386 0.699829
+Radical_BeliefsPursuit                 -4.540e-01  4.119e-01  -1.102 0.270365
+Radical_BeliefsShared Belief            4.716e-01  1.820e-01   2.592 0.009553
+Radical_BeliefsUnknown                 -6.201e-01  3.808e-01  -1.628 0.103478
+Radicalization_SequenceBelief-first     8.865e-01  6.122e-01   1.448 0.147605
+Radicalization_SequenceSimultaneous     3.985e-01  6.882e-01   0.579 0.562564
+Radicalization_SequenceUnknown          1.194e+00  6.176e-01   1.933 0.053238
+Age                                     4.451e-03  2.969e-03   1.499 0.133888
+Marital_StatusMarried                  -9.075e-02  2.866e-01  -0.317 0.751550
+Marital_StatusSingle (NM)              -1.256e-01  2.857e-01  -0.439 0.660360
+Marital_StatusUnknown                   6.774e-02  2.919e-01   0.232 0.816469
+Marital_StatusWidowed                  -2.716e-02  2.085e+00  -0.013 0.989610
+SexMale                                 5.954e-01  2.332e-01   2.554 0.010663
+ConvertBefore                           3.159e+00  1.696e+00   1.862 0.062610
+ConvertDuring                           7.155e-01  1.751e+00   0.409 0.682776
+ConvertNo                               2.743e+00  1.558e+00   1.760 0.078327
+ConvertUnknown                          7.256e-01  2.259e+00   0.321 0.748058
+MilitaryUnknown                        -7.949e-02  3.360e-01  -0.237 0.813011
+MilitaryYes                            -1.097e-01  2.025e-01  -0.542 0.588089
+Abuse_ChildYes (both)                  -2.327e+00  1.154e+00  -2.017 0.043682
+Abuse_ChildYes (family)                -1.133e+00  5.155e-01  -2.197 0.028021
+Abuse_ChildYes (non-family)            -1.006e+00  6.978e-01  -1.441 0.149580
+PsychologicalNone                      -1.214e-01  3.214e-01  -0.378 0.705634
+PsychologicalSpeculated                 7.897e-01  3.693e-01   2.138 0.032494
+Radical_FriendNo                        3.352e-01  3.985e-01   0.841 0.400189
+Radical_FriendNonviolent               -5.577e-01  2.962e-01  -1.883 0.059750
+Radical_FriendUnknown                   1.147e-01  2.687e-01   0.427 0.669485
+Radical_FriendViolent                   9.921e-01  2.812e-01   3.528 0.000418
+Previous_Criminal_ActivityMisdemeanors -8.070e-02  3.475e-01  -0.232 0.816345
+Previous_Criminal_ActivityNone         -1.109e-01  2.883e-01  -0.385 0.700408
+Previous_Criminal_ActivityUnknown      -7.282e-01  3.052e-01  -2.386 0.017037
+Previous_Criminal_ActivityViolent       4.406e-01  3.284e-01   1.342 0.179745
+Other_IdeologiesUnknown                 1.737e+01  6.007e+02   0.029 0.976937
+Other_IdeologiesYes                     5.819e-01  4.317e-01   1.348 0.177686
+Lone_OffenderYes                        1.359e-01  1.947e-01   0.698 0.485180
+Rad_DurationMedium                     -8.272e-02  2.528e-01  -0.327 0.743489
+Rad_DurationShort                      -7.392e-02  2.682e-01  -0.276 0.782839
+Rad_DurationUnknown                    -3.062e-01  2.280e-01  -1.343 0.179251
+RadicalizationFar Right                 6.361e-01  2.276e-01   2.795 0.005197
+RadicalizationSingle Issue              5.724e-01  3.088e-01   1.854 0.063728
+                                          
+(Intercept)                               
+Year_Exposure                             
+Group_MembershipExtremist Group        .  
+Group_MembershipInformal Group         ***
+Group_MembershipUnknown                   
+Role_GroupLeader                          
+Role_GroupLoose Associate              .  
+Role_GroupUnknown                         
+Social_Media_FrequencyFrequently          
+Social_Media_FrequencyNot applicable      
+Social_Media_FrequencyOccasionally     .  
+Social_Media_FrequencyRarely              
+Social_Media_FrequencySporadically     .  
+Social_Media_FrequencyUnknown             
+Radical_BehaviorsConvert Others           
+Radical_BehaviorsDistancing               
+Radical_BehaviorsLegal Activism           
+Radical_BehaviorsLifestyle                
+Radical_BehaviorsMat/Fin Support          
+Radical_BehaviorsNon-Violent Plot         
+Radical_BehaviorsNone                     
+Radical_BehaviorsOperational Support   .  
+Radical_BehaviorsTraining              ** 
+Radical_BehaviorsUnknown               *  
+Radical_BehaviorsViolent Plot          ***
+Radical_BeliefsExposed                 ** 
+Radical_BeliefsFull Knowledge             
+Radical_BeliefsNone                       
+Radical_BeliefsPursuit                    
+Radical_BeliefsShared Belief           ** 
+Radical_BeliefsUnknown                    
+Radicalization_SequenceBelief-first       
+Radicalization_SequenceSimultaneous       
+Radicalization_SequenceUnknown         .  
+Age                                       
+Marital_StatusMarried                     
+Marital_StatusSingle (NM)                 
+Marital_StatusUnknown                     
+Marital_StatusWidowed                     
+SexMale                                *  
+ConvertBefore                          .  
+ConvertDuring                             
+ConvertNo                              .  
+ConvertUnknown                            
+MilitaryUnknown                           
+MilitaryYes                               
+Abuse_ChildYes (both)                  *  
+Abuse_ChildYes (family)                *  
+Abuse_ChildYes (non-family)               
+PsychologicalNone                         
+PsychologicalSpeculated                *  
+Radical_FriendNo                          
+Radical_FriendNonviolent               .  
+Radical_FriendUnknown                     
+Radical_FriendViolent                  ***
+Previous_Criminal_ActivityMisdemeanors    
+Previous_Criminal_ActivityNone            
+Previous_Criminal_ActivityUnknown      *  
+Previous_Criminal_ActivityViolent         
+Other_IdeologiesUnknown                   
+Other_IdeologiesYes                       
+Lone_OffenderYes                          
+Rad_DurationMedium                        
+Rad_DurationShort                         
+Rad_DurationUnknown                       
+RadicalizationFar Right                ** 
+RadicalizationSingle Issue             .  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 3036.6  on 2197  degrees of freedom
+Residual deviance: 1392.9  on 2131  degrees of freedom
+AIC: 1526.9
+
+Number of Fisher Scoring iterations: 14</code></pre>
+</div>
+</div>
+<p><span class="math inline">\(\beta\text{OtherIdeologies}_{Unknown} = 17.37\)</span>, which would be interpreted as: When it is unknown whether or not an extremist adhered to another ideology that is not the one in which they became radicalized, the log-likelihood of this extremist becoming violent increases by a factor of exp(17.37) = 34,969,961 compared to when the extremist did not adhere to another ideology. This means that the log-likelihood of an extremist becoming violent increases by almost 35 million times, which seems indicative of an overfit for this parameter. I think applying a regularization technique could prove useful down the line, but for now I’m going to remove OtherIdeologies from my model and see if anything gets better.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>mod7 <span class="ot">&lt;-</span> <span class="fu">glm</span>(Violent <span class="sc">~</span> Year_Exposure <span class="sc">+</span> Group_Membership <span class="sc">+</span> Role_Group <span class="sc">+</span> Social_Media_Frequency <span class="sc">+</span> Radical_Behaviors <span class="sc">+</span> Radical_Beliefs <span class="sc">+</span> Radicalization_Sequence <span class="sc">+</span> Age <span class="sc">+</span> Marital_Status <span class="sc">+</span> Sex <span class="sc">+</span> Convert <span class="sc">+</span> Military <span class="sc">+</span> Abuse_Child <span class="sc">+</span> Psychological <span class="sc">+</span> Radical_Friend <span class="sc">+</span> Previous_Criminal_Activity <span class="sc">+</span> Other_Ideologies <span class="sc">+</span> Lone_Offender <span class="sc">+</span> Rad_Duration <span class="sc">+</span> Radicalization, pirus_filt, <span class="at">family =</span> <span class="st">"binomial"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

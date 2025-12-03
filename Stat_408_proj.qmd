@@ -1,0 +1,386 @@
+---
+title: "PIRUS"
+format: html
+editor: visual
+---
+
+# Political Extremism Regression Project
+
+```{r}
+library(tidyverse)
+library(regclass)
+library(lmtest)
+library(ResourceSelection)
+library(glmnet)
+library(pROC)
+```
+
+```{r}
+pirus <- read.csv("pirus_encoded.csv")
+glimpse(pirus)
+# When reading in my encoded file, it reads all the factors in as character vectors.
+pirus_fct <- pirus %>% 
+  mutate(across(-c(Subject_ID, Loc_Plot_State1:Year_Exposure, Loc_Habitation_State1:Loc_Habitation_City2, Age, Children, Citizenship, Nativity, Immigrant_Source, Component_ID, Component_Density, Degree_Centrality:Closeness_Centrality), as.factor))
+  
+glimpse(pirus_fct)
+# Filtering and cleaning this dataset is going to be an absolute headache. In order to make this more readable, I'm going to remove "groups" of columns at a time.
+political_extremism <- pirus_fct %>%
+  filter(Radicalization_Islamist != "Yes") %>%
+  filter(Ideological_Sub_Category1 != "Christian Identity" & Ideological_Sub_Category1 != "Islamist" & Ideological_Sub_Category1 != "Jewish Defense Lg.") %>% # Because I'm just focusing on politically-motivated extremism and not religiously-motivated extremism, I'm removing people with religious ideological sub categories.
+  select(-c(Subject_ID, Loc_Plot_State1:Loc_Plot_City2, Plot_Target1:Extent_Plot, Primary_Event_Mass_Casualty_Incident:Foreign_Fighter, Component_ID, Component_Density, Degree_Centrality:Closeness_Centrality)) %>% 
+  mutate(Violent = case_when(
+# Have to make Violent a binomial variable for a logistic regression
+    Violent == "Yes" ~ 1,
+    Violent == "No" ~ 0
+  ))# This removes all of the variables related to plots and the social network nodes of an extremist
+```
+
+This should leave me with variables that could be valid predictors of whether or not a political extremist in the United States will be violent. Now, I'm going to glimpse at the dataset to see if there are any other variables that could cause some problems for my logistic regression model.
+
+```{r}
+glimpse(political_extremism)
+```
+
+There are some variables that are largely filled with NA values, so I'm going to exclude these from my maximum model. Filtering for instances where these values aren't NA will cut down my dataset significantly.
+
+```{r}
+political_extremism <- political_extremism %>% 
+  select(-c(Criminal_Severity:Current_Status, Recruiter2, Recruiter3, Social_Media_Platform2:Social_Media_Platform5, Social_Media_Activities2:Social_Media_Activities7, Loc_Habitation_State1:Itinerant, Event_Influence2:Event_Influence4, Abuse_Type2, Abuse_Type3, Previous_Criminal_Activity_Type2, Previous_Criminal_Activity_Type3, Citizenship, Nativity, Time_US_Months, Radicalization_Islamist, Ideological_Sub_Category2, Ideological_Sub_Category3)) %>%
+## Making one Radicalization Variable
+  mutate(Radicalization = case_when(
+    Radicalization_Far_Right == "Yes" ~ "Far Right",
+    Radicalization_Far_Left == "Yes" ~ "Far Left",
+    Radicalization_Single_Issue == "Yes" ~ "Single Issue"
+  ),
+  Radicalization = as.factor(Radicalization),
+  Violent = as.factor(Violent)) %>% 
+  select(-Radicalization_Far_Right, -Radicalization_Far_Left, -Radicalization_Single_Issue) %>%
+  drop_na()
+
+glimpse(political_extremism)
+```
+
+# Data Exploration and Preparation
+
+## Data Exploration
+
+```{r}
+# Looking at the distribution of the data across years
+ggplot(political_extremism, aes(x = Year_Exposure)) +
+  geom_bar()
+
+# It's clear that the number of political extremists that were exposed to the public, arrested, or indicted has increased significantly after 2000, and especially after 2010.
+
+ggplot(political_extremism, aes(x = Age)) + 
+  geom_bar(stat = "count")
+
+# This plot shows me a couple of things of note: 1) There is an observation of Age that is registered as -99, which means unknown in the original PIRUS dataset, so this should be removed and 2) The overwhelming majority of the entrants are under 50 years of age.
+political_extremism <- political_extremism %>% 
+  filter(Age != -99)
+
+# Looking at this plot again...
+ggplot(political_extremism, aes(x = Age)) + 
+  geom_bar(stat = "count")
+
+# This next plot can give me a good idea of how many observations I am working with for my response variable, Violent
+ggplot(political_extremism, aes(x = Violent)) +
+  geom_bar(stat = "count")
+
+# This is a relief: There's a pretty decent balance between non-violent and violent extremists in this dataset. This means that in future work, implementing an oversampling technique will not be necessary unless I want to build a model that learns both violent and non-violent extremists equally.
+
+# Some pipelined plots...
+political_extremism %>% 
+  mutate(Age_Group = case_when(
+    Age < 10 ~ "0-10",
+    Age < 20 ~ "10-20",
+    Age < 30 ~ "20-30",
+    Age < 40 ~ "30-40",
+    Age < 50 ~ "40-50",
+    Age < 60 ~ "50-60",
+    Age < 70 ~ "60-70",
+    Age < 80 ~ "70-80",
+    Age < 90 ~ "80-90",
+    Age < 100 ~ "90-100"
+  )) %>% 
+  ggplot(aes(x = Age_Group, fill = Violent)) +
+  geom_bar(position = "dodge")
+
+political_extremism %>% 
+  mutate(Decade = case_when(
+    Year_Exposure < 1960 ~ "1900 - 1960",
+    Year_Exposure < 1970 ~ "1960s",
+    Year_Exposure < 1980 ~ "1970s",
+    Year_Exposure < 1990 ~ "1980s",
+    Year_Exposure < 2000 ~ "1990s",
+    Year_Exposure < 2010 ~ "2000s",
+    Year_Exposure < 2020 ~ "2010s",
+    Year_Exposure >= 2020 ~ "2020s"
+  )) %>% 
+  ggplot(aes(x = Decade, fill = Violent)) +
+  geom_bar(position = "dodge")
+
+# Because most of the variables in this dataset are categorical, there are only a few variables I can take summary statistics of.
+summary(political_extremism$Year_Exposure)
+summary(political_extremism$Age)
+summary(political_extremism$Children)
+```
+
+Splitting my data with an 80-20 split
+
+```{r}
+set.seed(2212003)
+Violent <- political_extremism$Violent
+political_extremism_exp <- political_extremism %>% 
+  select(-Violent)
+
+pirus_matrix <- model.matrix( ~ -1 + ., political_extremism_exp)
+pirus2 <- as.data.frame(pirus_matrix)
+pirus2 <- cbind(pirus2, Violent)
+
+train_index <- sample(1:nrow(pirus2), size = 0.8 * nrow(pirus2))
+train_data <- pirus2[train_index,]
+test_data <- pirus2[-train_index,]
+
+# Making train and test data
+x_train <- model.matrix(Violent ~ ., train_data)[, -1]
+y_train <- train_data$Violent
+
+x_test <- model.matrix(Violent ~ ., test_data)[, -1]
+y_test <- test_data$Violent
+```
+
+# Model Building
+
+## Building a Maximum Model
+
+```{r}
+library(leaps)
+
+mod_max <- glm(Violent ~ ., train_data, family = "binomial")
+summary(mod_max)
+```
+
+Now that I have a model, I'm going to test it for statistical significance with $\alpha = 0.05$
+
+Reduced Model: $\text{log}({\hat{Violent}}) = \beta_0$
+
+Full Model: $\text{log}({\hat{Violent}}) = \beta_0 + \beta_1{YearExposure} + \cdots + \beta_{336}RadDurationUnknown$
+
+$$H_0: \beta_j = 0: j = 1,\cdots,336 \\H_a: \exists \beta_j \neq 0: j = 1, \cdots, 336$$
+
+```{r}
+chi2 <- summary(mod_max)$null - summary(mod_max)$deviance
+p <- pchisq(chi2, 341, lower.tail = FALSE)
+```
+
+$\chi^2 = 1854.9839$, $p = 3.13 \times 10^{-206}$, so $p < \alpha$ and therefore we reject the null hypothesis and conclude that a generalized linear model predicting the log-odds of a political extremist being violent by all of the selected variables in the PIRUS dataset is statistically significant at $\alpha = 0.05$.
+
+Now, I'm going to test the fit of the model using a Hosmer-Lemeshow test at $\alpha = 0.05$
+
+```{r}
+hoslem.test(mod_max$y, fitted(mod_max))
+```
+
+For the Hosmer-Lemeshow test, $p = 0.001239$, so $p < \alpha$, and therefore we reject the null hypothesis and conclude that a generalized linear model predicting the log-odds of a political extremist being violent by all of the selected variables in the PIRUS dataset does not fit the data well.
+
+```{r}
+# Looking at the Pearson residual plot
+plot(fitted(mod_max), residuals.glm(mod_max), type = "pearson")
+```
+
+In looking at this plot, the Pearson residual plot shows that the residuals are roughly parallel to one another, but there's a tail as the fitted values get closer to one.
+
+Looking at ROC, AUC, and accuracy
+
+```{r}
+mod_max_probs <- predict(mod_max, newdata = test_data, type = "response")
+
+plot(roc(test_data$Violent, mod_max_probs))
+auc(roc(test_data$Violent, mod_max_probs))
+
+predictions_log <- ifelse(mod_max_probs > 0.5, 1, 0)
+observed <- test_data$Violent
+log_accuracy <- mean(predictions_log == observed)
+log_accuracy
+```
+
+AUC = 0.8586 \~ 85.86%, Accuracy = 0.794 \~ 79%.
+
+## Building LASSO Regression Models with K-Fold Cross Validation
+
+Before performing any regularized modeling technique, I need to perform a train-test split of my data with an 80-20% split.
+
+```{r}
+# Training the model
+cv_lasso <- cv.glmnet(x = x_train, y = y_train, nfolds = 10, alpha = 1, family = "binomial")
+plot(cv_lasso)
+lam_lasso <- cv_lasso$lambda.min
+se1_lasso <- cv_lasso$lambda.1se
+
+se1_lasso <- glmnet(x_train, y_train, lambda = se1_lasso, alpha = 1, family = "binomial")
+min_lasso <- glmnet(x_train, y_train, lambda = lam_lasso, alpha = 1, family = "binomial")
+
+coef(se1_lasso)
+coef(min_lasso)
+```
+
+```{r}
+# Testing my models, starting with min
+pred_min <- predict(min_lasso, newx = x_test, s = "lambda.min", type = "response")
+
+pred_min_df <- data.frame(
+  test_data,
+  pred_min
+)
+
+plot(roc(pred_min_df$Violent, pred_min_df$s.lambda.min))
+auc(roc(pred_min_df$Violent, pred_min_df$s.lambda.min))
+
+pred_min_lasso <- ifelse(pred_min > 0.5, 1, 0)
+min_lasso_acc <- mean(pred_min_lasso == observed)
+min_lasso_acc
+```
+
+The AUC is 0.9242 \~ 92.42%, and the accuracy is 0.8481 \~ 84.81%.
+
+```{r}
+# Now for se1
+pred_se1 <- predict(se1_lasso, newx = x_test, s = "lambda.1se", type = "response")
+pred_se1_df <- data.frame(
+  test_data,
+  pred_se1
+)
+
+plot(roc(pred_se1_df$Violent, pred_se1_df$s.lambda.1se))
+auc(roc(pred_se1_df$Violent, pred_se1_df$s.lambda.1se))
+
+pred_se1_lasso <- ifelse(pred_se1 > 0.5, 1, 0)
+se1_lasso_acc <- mean(pred_se1_lasso == observed)
+se1_lasso_acc
+```
+
+The AUC of this model is 0.9305 \~ 93.05%, and the accuracy is 0.8574 \~ 85.74%.
+
+Now, I'm going to look at building ridge regression models.
+
+## Building Ridge Regression Models with K-Fold Cross Validation
+
+```{r}
+cv_ridge <- cv.glmnet(x = x_train, y = y_train, nfolds = 10, alpha = 0, family = "binomial")
+plot(cv_ridge)
+
+lam_ridge <- cv_ridge$lambda.min
+se1_rid <- cv_ridge$lambda.1se
+
+se1_ridge <- glmnet(x_train, y_train, lambda = se1_rid, alpha = 0, family = "binomial")
+min_ridge <- glmnet(x_train, y_train, lambda = lam_ridge, alpha = 0, family = "binomial")
+
+coef(se1_ridge)
+coef(min_ridge)
+```
+
+```{r}
+pred_min_ridge <- predict(min_ridge, newx = x_test, s = "lambda.min", type = "response")
+
+min_ridge_df <- data.frame(
+  test_data,
+  pred_min_ridge
+)
+
+plot(roc(min_ridge_df$Violent, min_ridge_df$s.lambda.min))
+auc(roc(min_ridge_df$Violent, min_ridge_df$s.lambda.min))
+
+pred_ridge_min <- ifelse(pred_min_ridge > 0.5, 1, 0)
+min_ridge_acc <- mean(pred_ridge_min == observed)
+min_ridge_acc
+```
+
+The AUC for the ridge logistic regression model using $\hat{\lambda}$ as $\lambda$ is 0.9008 \~ 90.08%, making it the second-least accurate model in it's predictive power that I have made thus far. The accuracy of this model is 0.816 \~ 81.6%.
+
+```{r}
+pred_se1_ridge <- predict(se1_ridge, newx = x_test, s = "lambda.1se", type = "response")
+
+se1_ridge_df <- data.frame(
+  test_data,
+  pred_se1_ridge
+)
+
+plot(roc(se1_ridge_df$Violent, se1_ridge_df$s.lambda.1se))
+auc(roc(se1_ridge_df$Violent, se1_ridge_df$s.lambda.1se))
+
+pred_ridge_se1 <- ifelse(pred_se1_ridge > 0.5, 1, 0)
+se1_ridge_acc <- mean(pred_ridge_se1 == observed)
+se1_ridge_acc
+```
+
+The AUC for the ridge logistic regression model using $\bar{\lambda}$ as $\lambda$ is 0.9019 \~ 90.19%, which is $\frac{1}{10}$th of a percentage point better than the ridge logistic regression model with $\hat{\lambda}$. The accuracy is 0.8222 \~ 82.22%.
+
+This makes sense to me, as the ridge regularization process leaves in all of the parameters from my dataset, many of which were removed both in the standard logistic regression model and the LASSO logistic regression model.
+
+Now, for the last models, I will be building elastic nets.
+
+## Building Elastic Net Regression Models with K-Fold Cross Validation
+
+```{r}
+cv_enet <- cv.glmnet(x = x_train, y = y_train, nfolds = 10, alpha = 0.5, family = "binomial")
+plot(cv_enet)
+
+lam_enet <- cv_enet$lambda.min
+se1_enet_val <- cv_enet$lambda.1se
+
+min_enet <- glmnet(x_train, y_train, lambda = lam_enet, alpha = 0.5, family = "binomial")
+se1_enet_mod <- glmnet(x_train, y_train, lambda = se1_enet_val, alpha = 0.5, family = "binomial")
+
+coef(min_enet)
+coef(se1_enet_mod)
+```
+
+Prediction time for Elastic Net
+
+```{r}
+pred_min_enet <- predict(min_enet, newx = x_test, s = "lambda.min", type = "response")
+
+min_enet_df <- data.frame(
+  test_data,
+  pred_min_enet
+)
+
+plot(roc(min_enet_df$Violent, min_enet_df$s.lambda.min))
+auc(roc(min_enet_df$Violent, min_enet_df$s.lambda.min))
+
+pred_enet_min <- ifelse(pred_min_enet > 0.5, 1, 0)
+min_enet_acc <- mean(pred_enet_min == observed)
+min_enet_acc
+```
+
+The AUC for the elastic net logistic regression model with $\hat{\lambda}$ as $\lambda$ is 92.39%, which falls just above the LASSO model that used $\hat{\lambda}$ as well. The accuracy for this model is 0.8407 \~ 84.07%
+
+```{r}
+pred_se1_enet <- predict(se1_enet_mod, newx = x_test, s = "lambda.1se", type = "response")
+
+se1_enet_df <- data.frame(
+  test_data,
+  pred_se1_enet
+)
+
+plot(roc(se1_enet_df$Violent, se1_enet_df$s.lambda.1se))
+auc(roc(se1_enet_df$Violent, se1_enet_df$s.lambda.1se))
+
+pred_enet_se1 <- ifelse(pred_se1_enet > 0.5, 1, 0)
+se1_enet_acc <- mean(pred_enet_se1 == observed)
+se1_enet_acc
+```
+
+The AUC for the elastic net logistic regression model with $\bar{\lambda}$ as $\lambda$ is 92.7%, making it $\frac{3}{10}$ths of a percentage point better than the elastic net logistic regression model with $\hat{\lambda}$ as $\lambda$, and marginally lower in it's predictive power than the LASSO model that used $\bar{\lambda}$. The accuracy of this model is 0.8388 \~ 83.88%
+
+# Interpretation of Results
+
+| Model | AUC | Accuracy |
+|----|----|----|
+| Unpenalized Logistic Regression | 0.8986 (89.9%) | 0.794 (79.4%) |
+| LASSO Logistic Regression ($\lambda = \hat{\lambda}$) | 0.9242 (92.4%) | 0.8481 (84.8%) |
+| LASSO Logistic Regression ($\lambda = \bar{\lambda}$) | 0.9305 (93.1%) | 0.8574 (85.7%) |
+| Ridge Logistic Regression ($\lambda = \hat{\lambda}$) | 0.9008 (90.1%) | 0.816 (81.6%) |
+| Ridge Logistic Regression ($\lambda = \bar{\lambda}$) | 0.9019 (90.2%) | 0.8222 (82.2%) |
+| Elastic Net Logistic Regression ($\lambda = \hat{\lambda}$) | 0.9239 (92.4%) | 0.8407 (84.1%) |
+| Elastic Net Logistic Regression ($\lambda = \bar{\lambda}$) | 0.927 (92.7%) | 0.8388 (83.9%) |
