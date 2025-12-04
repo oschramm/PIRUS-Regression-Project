@@ -6,6 +6,12 @@ editor: visual
 
 # Political Extremism Regression Project
 
+ADD TRAIN ACCURACIES
+
+## Introduction
+
+For this project, I wanted to build a logistic regression model that could predict whether or not a Far-Left, Far-Right, or Single–Issue radicalized individual in the United States would plot or commit a violent act. The dataset that I used to train this model is the Profiles of Individuals Radicalized in the United States (PIRUS) dataset from the University of Maryland's National Consortium for the Study of Terrorism and Responses to Terrorism (START). This dataset contains information about extremist plots, activities, radicalization sequences and details, demographics, and social network nodes. The original dataset has 3,526 observations which span from 1940-2022. Each observation is deidentified, but several notable domestic terrorist attacks, such as the Oklahoma City Bombing in 1994, the Charleston Church shooting in 2015, the El Paso Walmart shooting in 2019, and the Buffalo Grocery Store shooting in 2022. What is notably excluded from PIRUS is the January 6th Insurrection at the United States Capitol Building in 2021, which was excluded because of the high number of perpetrators (\~1000), which would drastically influence any models or research on this dataset. I chose
+
 ```{r}
 library(tidyverse)
 library(regclass)
@@ -107,7 +113,8 @@ political_extremism %>%
 
 political_extremism %>% 
   mutate(Decade = case_when(
-    Year_Exposure < 1960 ~ "1900 - 1960",
+    Year_Exposure < 1950 ~ "1940s",
+    Year_Exposure < 1960 ~ "1950s",
     Year_Exposure < 1970 ~ "1960s",
     Year_Exposure < 1980 ~ "1970s",
     Year_Exposure < 1990 ~ "1980s",
@@ -199,12 +206,15 @@ plot(roc(test_data$Violent, mod_max_probs))
 auc(roc(test_data$Violent, mod_max_probs))
 
 predictions_log <- ifelse(mod_max_probs > 0.5, 1, 0)
-observed <- test_data$Violent
-log_accuracy <- mean(predictions_log == observed)
+log_accuracy <- mean(predictions_log == test_data$Violent)
 log_accuracy
+
+mod_max_train <- predict(mod_max, newdata = train_data, type = "response")
+predict_train <- ifelse(mod_max_train > 0.5, 1, 0)
+max_train_accuracy <- mean(predict_train == train_data$Violent)
 ```
 
-AUC = 0.8586 \~ 85.86%, Accuracy = 0.794 \~ 79%.
+AUC = 0.8586 \~ 85.86%, Accuracy = 0.794 \~ 79.4%.
 
 ## Building LASSO Regression Models with K-Fold Cross Validation
 
@@ -226,18 +236,17 @@ coef(min_lasso)
 
 ```{r}
 # Testing my models, starting with min
+pred_min_train <- predict(min_lasso, newx = x_train, s = "lambda.min", type = "response")
 pred_min <- predict(min_lasso, newx = x_test, s = "lambda.min", type = "response")
 
-pred_min_df <- data.frame(
-  test_data,
-  pred_min
-)
+plot(roc(test_data$Violent, pred_min))
+auc(roc(test_data$Violent, pred_min))
 
-plot(roc(pred_min_df$Violent, pred_min_df$s.lambda.min))
-auc(roc(pred_min_df$Violent, pred_min_df$s.lambda.min))
+lasso_min_train <- ifelse(pred_min_train > 0.5, 1, 0)
+lasso_min_train_acc <- mean(lasso_min_train == train_data$Violent)
 
 pred_min_lasso <- ifelse(pred_min > 0.5, 1, 0)
-min_lasso_acc <- mean(pred_min_lasso == observed)
+min_lasso_acc <- mean(pred_min_lasso == test_data$Violent)
 min_lasso_acc
 ```
 
@@ -246,16 +255,17 @@ The AUC is 0.9242 \~ 92.42%, and the accuracy is 0.8481 \~ 84.81%.
 ```{r}
 # Now for se1
 pred_se1 <- predict(se1_lasso, newx = x_test, s = "lambda.1se", type = "response")
+
 pred_se1_df <- data.frame(
   test_data,
   pred_se1
 )
 
-plot(roc(pred_se1_df$Violent, pred_se1_df$s.lambda.1se))
-auc(roc(pred_se1_df$Violent, pred_se1_df$s.lambda.1se))
+plot(roc(test_data$Violent, pred_se1))
+auc(roc(test_data$Violent, pred_se1))
 
 pred_se1_lasso <- ifelse(pred_se1 > 0.5, 1, 0)
-se1_lasso_acc <- mean(pred_se1_lasso == observed)
+se1_lasso_acc <- mean(pred_se1_lasso == test_data$Violent)
 se1_lasso_acc
 ```
 
@@ -282,16 +292,11 @@ coef(min_ridge)
 ```{r}
 pred_min_ridge <- predict(min_ridge, newx = x_test, s = "lambda.min", type = "response")
 
-min_ridge_df <- data.frame(
-  test_data,
-  pred_min_ridge
-)
-
-plot(roc(min_ridge_df$Violent, min_ridge_df$s.lambda.min))
-auc(roc(min_ridge_df$Violent, min_ridge_df$s.lambda.min))
+plot(roc(test_data$Violent, pred_min_ridge))
+auc(roc(test_data$Violent, pred_min_ridge))
 
 pred_ridge_min <- ifelse(pred_min_ridge > 0.5, 1, 0)
-min_ridge_acc <- mean(pred_ridge_min == observed)
+min_ridge_acc <- mean(pred_ridge_min == test_data$Violent)
 min_ridge_acc
 ```
 
@@ -300,16 +305,11 @@ The AUC for the ridge logistic regression model using $\hat{\lambda}$ as $\lambd
 ```{r}
 pred_se1_ridge <- predict(se1_ridge, newx = x_test, s = "lambda.1se", type = "response")
 
-se1_ridge_df <- data.frame(
-  test_data,
-  pred_se1_ridge
-)
-
-plot(roc(se1_ridge_df$Violent, se1_ridge_df$s.lambda.1se))
-auc(roc(se1_ridge_df$Violent, se1_ridge_df$s.lambda.1se))
+plot(roc(test_data$Violent, pred_se1_ridge))
+auc(roc(test_data$Violent, pred_se1_ridge))
 
 pred_ridge_se1 <- ifelse(pred_se1_ridge > 0.5, 1, 0)
-se1_ridge_acc <- mean(pred_ridge_se1 == observed)
+se1_ridge_acc <- mean(pred_ridge_se1 == test_data$Violent)
 se1_ridge_acc
 ```
 
@@ -330,9 +330,6 @@ se1_enet_val <- cv_enet$lambda.1se
 
 min_enet <- glmnet(x_train, y_train, lambda = lam_enet, alpha = 0.5, family = "binomial")
 se1_enet_mod <- glmnet(x_train, y_train, lambda = se1_enet_val, alpha = 0.5, family = "binomial")
-
-coef(min_enet)
-coef(se1_enet_mod)
 ```
 
 Prediction time for Elastic Net
@@ -340,16 +337,11 @@ Prediction time for Elastic Net
 ```{r}
 pred_min_enet <- predict(min_enet, newx = x_test, s = "lambda.min", type = "response")
 
-min_enet_df <- data.frame(
-  test_data,
-  pred_min_enet
-)
-
-plot(roc(min_enet_df$Violent, min_enet_df$s.lambda.min))
-auc(roc(min_enet_df$Violent, min_enet_df$s.lambda.min))
+plot(roc(test_data$Violent, pred_min_enet))
+auc(roc(test_data$Violent, pred_min_enet))
 
 pred_enet_min <- ifelse(pred_min_enet > 0.5, 1, 0)
-min_enet_acc <- mean(pred_enet_min == observed)
+min_enet_acc <- mean(pred_enet_min == test_data$Violent)
 min_enet_acc
 ```
 
@@ -358,17 +350,14 @@ The AUC for the elastic net logistic regression model with $\hat{\lambda}$ as $\
 ```{r}
 pred_se1_enet <- predict(se1_enet_mod, newx = x_test, s = "lambda.1se", type = "response")
 
-se1_enet_df <- data.frame(
-  test_data,
-  pred_se1_enet
-)
-
-plot(roc(se1_enet_df$Violent, se1_enet_df$s.lambda.1se))
-auc(roc(se1_enet_df$Violent, se1_enet_df$s.lambda.1se))
+plot(roc(test_data$Violent, pred_se1_enet))
+auc(roc(test_data$Violent, pred_se1_enet))
 
 pred_enet_se1 <- ifelse(pred_se1_enet > 0.5, 1, 0)
-se1_enet_acc <- mean(pred_enet_se1 == observed)
+se1_enet_acc <- mean(pred_enet_se1 == test_data$Violent)
 se1_enet_acc
+
+# Use summary command
 ```
 
 The AUC for the elastic net logistic regression model with $\bar{\lambda}$ as $\lambda$ is 92.7%, making it $\frac{3}{10}$ths of a percentage point better than the elastic net logistic regression model with $\hat{\lambda}$ as $\lambda$, and marginally lower in it's predictive power than the LASSO model that used $\bar{\lambda}$. The accuracy of this model is 0.8388 \~ 83.88%
@@ -377,7 +366,7 @@ The AUC for the elastic net logistic regression model with $\bar{\lambda}$ as $\
 
 | Model | AUC | Accuracy |
 |----|----|----|
-| Unpenalized Logistic Regression | 0.8986 (89.9%) | 0.794 (79.4%) |
+| Un-penalized Logistic Regression | 0.8986 (89.9%) | 0.794 (79.4%) |
 | LASSO Logistic Regression ($\lambda = \hat{\lambda}$) | 0.9242 (92.4%) | 0.8481 (84.8%) |
 | LASSO Logistic Regression ($\lambda = \bar{\lambda}$) | 0.9305 (93.1%) | 0.8574 (85.7%) |
 | Ridge Logistic Regression ($\lambda = \hat{\lambda}$) | 0.9008 (90.1%) | 0.816 (81.6%) |
