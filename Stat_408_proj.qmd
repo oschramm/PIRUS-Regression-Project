@@ -1,14 +1,14 @@
 ---
-title: "PIRUS"
+title: "Predicting Political Violence in the United States"
 format: html
 editor: visual
 ---
 
-# Political Extremism Regression Project
+# Predicting Political Violence in the United States
 
-## Introduction
+# Introduction
 
-For this project, I wanted to build a logistic regression model that could predict whether or not a Far-Left, Far-Right, or Single–Issue radicalized individual in the United States would plot or commit a physically violent act. The dataset that I used to train this model is the Profiles of Individuals Radicalized in the United States (PIRUS) dataset from the University of Maryland's National Consortium for the Study of Terrorism and Responses to Terrorism (START). This dataset contains information about extremist plots, activities, radicalization sequences and details, demographics, and social network nodes. The original dataset has 3,526 observations which span from 1940-2022. Each observation is deidentified, but several notable domestic terrorist attacks, such as the Oklahoma City Bombing in 1994, the Charleston Church shooting in 2015, the El Paso Walmart shooting in 2019, and the Buffalo Grocery Store shooting in 2022. What is notably excluded from PIRUS is the January 6th Insurrection at the United States Capitol Building in 2021, which was excluded because of the high number of perpetrators (\~1000), which would drastically influence any models or research on this dataset. I chose to do this project because of it's relevance to the current political climate in the United States. Extremism influenced by political leaning has seen a rise in the 21st Century, and violent acts motivated by these extreme beliefs have also seen a rise. The publicity of this extremism has also increased, with media outlets and politicians spinning extremist activities every which way in order to fit their narrative. My hope is that the predictive models I have built can cut through these narratives and deliver real, unbiased insights into what pushes political extremists to the violent edge.
+For this project, I wanted to build a logistic regression model that could predict whether or not a Far-Left, Far-Right, or Single–Issue radicalized individual in the United States would participate in or commit an act of political violence. The dataset that I used to train this model is the Profiles of Individuals Radicalized in the United States (PIRUS) dataset from the University of Maryland's National Consortium for the Study of Terrorism and Responses to Terrorism (START). This dataset contains information about extremist plots, activities, radicalization sequences and details, demographics, and social network nodes. The original dataset has 3,526 observations which span from 1940-2022. Each observation is deidentified, but several notable domestic terrorist attacks, such as the Oklahoma City Bombing in 1994, the Charleston Church shooting in 2015, the El Paso Walmart shooting in 2019, and the Buffalo Grocery Store shooting in 2022. What is notably excluded from PIRUS is the January 6th Insurrection at the United States Capitol Building in 2021, which was excluded because of the high number of perpetrators (\~1000), which would drastically influence any models or research on this dataset. I chose to do this project because of it's relevance to the current political climate in the United States. Extremism influenced by political leaning has seen a rise in the 21st Century, and violent acts motivated by these extreme beliefs have also seen a rise. The publicity of this extremism has also increased, with media outlets and politicians spinning extremist activities every which way in order to fit their narrative. My hope is that the predictive models I have built can cut through these narratives and deliver real, unbiased insights into what pushes political extremists to the violent edge.
 
 ```{r}
 library(tidyverse)
@@ -23,7 +23,7 @@ library(pROC)
 
 ## Data Preparation
 
-In order to make sure that I was able to train my models on the best subset of data possible, I had to read through the PIRUS Codebook to develop an understanding of what each variable in the dataset meant, and consider what that variable might mean for my models. For starters, I filtered out all observations that held "NA" values. Of the 124 variables in the original, only 10 are numeric, and each variable that held "NA" values was a categorical variable. Performing imputation on these variables would have been difficult and could have negatively influenced my model, so for the time being I figured it was best to just remove them from the training data. I also removed variables related to the violent plots of the extremists, as these values would have been directly informative of my response variable. Lastly, I removed variables like SubjectID and the social network nodes, as these are irrelevant to the goal of predicting whether or not an extremist will plot or commit a physically violent act. For
+In order to make sure that I was able to train my models on the best subset of data possible, I had to read through the PIRUS Codebook to develop an understanding of what each variable in the dataset meant, and consider what that variable might mean for my models. For starters, I filtered out all observations that held "NA" values. Of the 124 variables in the original, only 10 are numeric, and each variable that held "NA" values was a categorical variable. Performing imputation on these variables would have been difficult and could have negatively influenced my model, so for the time being I figured it was best to just remove them from the training data. I also removed variables related to the violent plots of the extremists, as these values would have been directly informative of my response variable. Lastly, I removed variables like SubjectID and the social network nodes, as these are irrelevant to the goal of predicting whether or not an extremist will participate in or commit an act of political violence.
 
 ```{r}
 pirus <- read.csv("pirus_encoded.csv")
@@ -60,7 +60,7 @@ political_extremism <- political_extremism %>%
   Violent = as.factor(Violent)) %>% 
   select(-Radicalization_Far_Right, -Radicalization_Far_Left, -Radicalization_Single_Issue) %>%
   # filtering out any person who's age is unknown
-  filter(Age != -99) %>% 
+  filter(Age != -99) %>%
   drop_na()
 
 glimpse(political_extremism)
@@ -152,7 +152,7 @@ political_extremism %>%
 
 ## Building an Unpenalized Logistic Regression Model
 
-Splitting my data with an 80-20 split
+Splitting my data with an 80-20 split.
 
 ```{r}
 set.seed(2212003)
@@ -183,7 +183,6 @@ y_test <- test_data$Violent
 # Up first: logistic regression with all variables
 mod_max <- glm(Violent ~ ., train_data, family = "binomial")
 summary(mod_max)
-# There is perfect multicollinearity between Group_Membership Unknown, Group_Competition
 ```
 
 I'll be looking at the **Area Under the Curve (AUC)** and **test accuracy** of my models to select my best model, and I will be **comparing the train accuracy to the test accuracy** of each model to determine if the models fit my data well.
@@ -198,15 +197,20 @@ max_train_acc
 # Now on the test data
 probs_max_test <- predict(mod_max, newdata = test_data, type = "response")
 
-plot(roc(y_test, probs_max_test))
+plot(roc(y_test, probs_max_test), main = "Unpenalized Logistic Regression")
 auc(roc(y_test, probs_max_test))
 
 pred_max_test <- ifelse(probs_max_test > 0.5, 1, 0)
 max_test_acc <- mean(pred_max_test == y_test)
 max_test_acc
+
+mod_max_coefs <- as.data.frame(summary(mod_max)$coefficients)
+mod_max_coefs
 ```
 
-AUC = 0.8586 \~ 85.86%, Train Accuracy = 0.8949 \~ 89.49%, Test Accuracy = 0.7944 \~ 79.44%
+AUC = 0.8586 \~ 85.9%, Train Accuracy = 0.8949 \~ 89.5%, Test Accuracy = 0.7944 \~ 79.4%
+
+There are 342 defined coefficients in the unpenalized logistic regression model. Something notable about this model's summary is that there are 24 coefficients that were not defined because of singularities, or perfect multicollinearity with other variables. I could run a stepwise variable selection process on this model, but I think implementing regularization techniques like LASSO and Elastic Net will be effective in the same way. There are also some coefficients in this model that seem nonsensical to interpret, like $\beta_{62} SocialMediaPlatform Reddit = 15.239$, which is interpreted as: For a extremist who was radicalized or mobilized on Reddit, the expected odds of them participating in or committing an act of political violence increases by a factor of exp(15.239), or 4,151,582 compared to an extremist who was radicalized or mobilized on blogging sites, holding all other variables constant. Ridge regression can help shrink coefficients like this, so I'm going to build models for all three.
 
 ## Building LASSO Regression Models with K-Fold Cross Validation
 
@@ -221,8 +225,7 @@ lasso_min_mod <- glmnet(x_train, y_train, lambda = lasso_min, alpha = 1, family 
 lasso_1se_mod <- glmnet(x_train, y_train, lambda = lasso_1se, alpha = 1, family = "binomial")
 
 coef(lasso_min_mod)
-
-coef(lasso_1se_mod)
+lasso_1se_coefs <- coef(lasso_1se_mod)
 ```
 
 ```{r}
@@ -234,7 +237,7 @@ lmin_train_acc
 
 probs_lmin_test <- predict(lasso_min_mod, newx = x_test, s = "lambda.min", type = "response")
 
-plot(roc(y_test, probs_lmin_test))
+plot(roc(y_test, probs_lmin_test), main = "LASSO Regression with lambda.min")
 auc(roc(y_test, probs_lmin_test))
 
 pred_lmin_test <- ifelse(probs_lmin_test > 0.5, 1, 0)
@@ -242,7 +245,7 @@ lmin_test_acc <- mean(pred_lmin_test == y_test)
 lmin_test_acc
 ```
 
-The AUC is 0.9242 \~ 92.42%, the train accuracy is 0.8625 \~ 86.25%, and the test accuracy is 0.8481 \~ 84.81%.
+The AUC is 0.9242 \~ 92.4%, the train accuracy is 0.8625 \~ 86.3%, and the test accuracy is 0.8481 \~ 84.8%.
 
 ```{r}
 # Now for se1
@@ -253,7 +256,7 @@ l1se_train_acc
 
 probs_l1se_test <- predict(lasso_1se_mod, newx = x_test, s = "lambda.1se", type = "response")
 
-plot(roc(y_test, probs_l1se_test))
+plot(roc(y_test, probs_l1se_test), main = "LASSO Regression with lambda.1se")
 auc(roc(y_test, probs_l1se_test))
 
 pred_l1se_test <- ifelse(probs_l1se_test > 0.5, 1, 0)
@@ -261,7 +264,7 @@ l1se_test_acc <- mean(pred_l1se_test == y_test)
 l1se_test_acc
 ```
 
-The AUC of this model is 0.9305 \~ 93.05%, the train accuracy is 0.8421 \~ 84.21%, and the test accuracy is 0.8574 \~ 85.74%.
+The AUC of this model is 0.9305 \~ 93.1%, the train accuracy is 0.8421 \~ 84.2%, and the test accuracy is 0.8574 \~ 85.7%.
 
 ## Building Ridge Regression Models with K-Fold Cross Validation
 
@@ -275,8 +278,8 @@ ridge_1se <- cv_ridge$lambda.1se
 ridge_min_mod <- glmnet(x_train, y_train, lambda = ridge_min, alpha = 0, family = "binomial")
 ridge_1se_mod <- glmnet(x_train, y_train, lambda = ridge_1se, alpha = 0, family = "binomial")
 
-coef(ridge_min_mod)
-coef(ridge_1se_mod)
+ridge_min_coefs <- coef(ridge_min_mod)
+ridge_1se_coefs <- coef(ridge_1se_mod)
 ```
 
 ```{r}
@@ -289,7 +292,7 @@ rmin_train_acc
 # Testing on test data with ROC/AUC
 probs_rmin_test <- predict(ridge_min_mod, newx = x_test, s = "lambda.min", type = "response")
 
-plot(roc(y_test, probs_rmin_test))
+plot(roc(y_test, probs_rmin_test), main = "Ridge Regression with lambda.min")
 auc(roc(y_test, probs_rmin_test))
 
 pred_rmin_test <- ifelse(probs_rmin_test > 0.5, 1, 0)
@@ -297,7 +300,7 @@ rmin_test_acc <- mean(pred_rmin_test == y_test)
 rmin_test_acc
 ```
 
-The AUC of this model is 0.9008 \~ 90.08%, the train accuracy is 0.8773 \~ 87.73%, and the test accuracy is 0.8166 \~ 81.66%
+The AUC of this model is 0.9008 \~ 90.1%, the train accuracy is 0.8773 \~ 87.7%, and the test accuracy is 0.8166 \~ 81.7%
 
 ```{r}
 # Train first
@@ -309,7 +312,7 @@ r1se_train_acc
 # Test second
 probs_r1se_test <- predict(ridge_1se_mod, newx = x_test, s = "lambda.1se", type = "response")
 # AUC/ROC
-plot(roc(y_test, probs_r1se_test))
+plot(roc(y_test, probs_r1se_test), main = "Ridge Regression with lambda.1se")
 auc(roc(y_test, probs_r1se_test))
 
 pred_r1se_test <- ifelse(probs_r1se_test > 0.5, 1, 0)
@@ -317,9 +320,7 @@ r1se_test_acc <- mean(pred_r1se_test == y_test)
 r1se_test_acc
 ```
 
-The AUC for this model is 0.9019 \~ 90.19%, the train accuracy is 0.8685 \~ 86.85%, and the test accuracy is 0.8222 \~ 82.22%.
-
-This makes sense to me, as the ridge regularization process leaves in all of the parameters from my dataset, many of which were removed both in the standard logistic regression model and the LASSO logistic regression model.
+The AUC for this model is 0.9019 \~ 90.2%, the train accuracy is 0.8685 \~ 86.9%, and the test accuracy is 0.8222 \~ 82.2%.
 
 Now, for the last models, I will build elastic nets.
 
@@ -334,9 +335,12 @@ enet_1se <- cv_enet$lambda.1se
 
 enet_min_mod <- glmnet(x_train, y_train, lambda = enet_min, alpha = 0.5, family = "binomial")
 enet_1se_mod <- glmnet(x_train, y_train, lambda = enet_1se, alpha = 0.5, family = "binomial")
+
+enet_min_coefs <- coef(enet_min_mod)
+enet_1se_coefs <- coef(enet_1se_mod)
 ```
 
-Prediction time for Elastic Net
+Generating my predictions for
 
 ```{r}
 # Train
@@ -348,7 +352,7 @@ emin_train_acc
 # Test
 probs_emin_test <- predict(enet_min_mod, newx = x_test, s = "lambda.min", type = "response")
 
-plot(roc(y_test, probs_emin_test))
+plot(roc(y_test, probs_emin_test), main = "Elastic Net with lambda.min")
 auc(roc(y_test, probs_emin_test))
 
 pred_emin_test <- ifelse(probs_emin_test > 0.5, 1, 0)
@@ -356,7 +360,7 @@ emin_test_acc <- mean(pred_emin_test == y_test)
 emin_test_acc
 ```
 
-The AUC of this model is 0.9239 \~ 92.39%, the train accuracy is 0.868 \~ 86.8%, and the test accuracy is 0.8407 \~ 84.07%
+The AUC of this model is 0.9239 \~ 92.4%, the train accuracy is 0.868 \~ 86.7%, and the test accuracy is 0.8407 \~ 84.1%
 
 ```{r}
 probs_e1se_train <- predict(enet_1se_mod, newx = x_train, s = "lambda.1se", type = "response")
@@ -366,26 +370,56 @@ e1se_train_acc
 
 probs_e1se_test <- predict(enet_1se_mod, newx = x_test, s = "lambda.1se", type = "response")
 
-plot(roc(y_test, probs_e1se_test))
+plot(roc(y_test, probs_e1se_test), main = "Elastic Net with lambda.1se")
 auc(roc(y_test, probs_e1se_test))
 
 pred_e1se_test <- ifelse(probs_e1se_test > 0.5, 1, 0)
 e1se_test_acc <- mean(pred_e1se_test == y_test)
 e1se_test_acc
-
-# Use summary command
 ```
 
-The AUC of this model is 0.927 \~ 92.7%, the train accuracy is 0.8504 \~ 85.04%, and the test accuracy is 0.8388 \~ 83.88%.
+The AUC of this model is 0.927 \~ 92.7%, the train accuracy is 0.8504 \~ 85%, and the test accuracy is 0.8388 \~ 83.9%.
 
 # Interpretation of Results
 
-| Model | AUC | Train Accuracy | Test Accuracy | Accuracy Difference |
-|----------------------------|-----------------------|-----------------------|--|--|
-| Un-penalized Logistic Regression | 0.8586 (85.86%) | **0.8949 (89.49%)** | 0.7944 (79.44%) | 0.1005 (10.05%) |
-| LASSO Logistic Regression ($\lambda = \hat{\lambda}$) | 0.9242 (92.42%) | 0.8625 (86.25%) | 0.8481 (84.81%) | 0.0144 (1.44%) |
-| LASSO Logistic Regression ($\lambda = \bar{\lambda}$) | **0.9305 (93.05%)** | 0.8421 (84.21%) | **0.8574 (85.74%)** | +0.0153 (+1.53%) |
-| Ridge Logistic Regression ($\lambda = \hat{\lambda}$) | 0.9008 (90.08%) | 0.8773 (87.73%) | 0.8166 (81.66%) |  |
-| Ridge Logistic Regression ($\lambda = \bar{\lambda}$) | 0.9019 (90.19%) | 0.8685 (86.85%) | 0.8222 (82.22%) |  |
-| Elastic Net Logistic Regression ($\lambda = \hat{\lambda}$) | 0.9239 (92.39%) | 0.8680 (86.8%) | 0.8407 (84.07%) |  |
-| Elastic Net Logistic Regression ($\lambda = \bar{\lambda}$) | 0.927 (92.7%) | 0.8504 (85.04%) | 0.8388 (83.88%) |  |
+## Model Diagnostic Results Table
+
+| Model | \# of Coefficients | AUC | Train Accuracy | Test Accuracy | Accuracy Difference |
+|-------------------------|-------------|--------------|---------------|--------------|---------------|
+| Unpenalized Logistic Regression | 342 (24 undef.) | *0.8586 (85.9%)* | **0.8949 (89.5%)** | *0.7944 (79.4%)* | *-0.1005 (10.1%)* |
+| LASSO Logistic Regression ($\lambda = \hat{\lambda}$) | 85 | 0.9242 (92.4%) | 0.8625 (86.3%) | 0.8481 (84.8%) | -0.0144 (1.4%) |
+| LASSO Logistic Regression ($\lambda = \bar{\lambda}$) | 38 | **0.9305 (93.1%)** | 0.8421 (84.2%) | **0.8574 (85.7%)** | **+0.0153 (+1.5%)** |
+| Ridge Logistic Regression ($\lambda = \hat{\lambda}$) | 350 | 0.9008 (90.1%) | 0.8773 (87.7%) | 0.8166 (81.7%) | -0.0607 (6.1%) |
+| Ridge Logistic Regression ($\lambda = \bar{\lambda}$) | 350 | 0.9019 (90.2%) | 0.8685 (86.9%) | 0.8222 (82.2%) | -0.0463 (4.6%) |
+| Elastic Net Logistic Regression ($\lambda = \hat{\lambda}$) | 111 | 0.9239 (92.3%) | 0.8680 (86.8%) | 0.8407 (84.1%) | -0.0273 (2.7%) |
+| Elastic Net Logistic Regression ($\lambda = \bar{\lambda}$) | 52 | 0.927 (92.7%) | 0.8504 (85%) | 0.8388 (83.9%) | -0.0116 (1.2%) |
+
+: **Highest is bold**, *lowest is italicized*
+
+## Testing My Best Model on Violent Extremists Exposed After 2022
+
+Now that I have my best model, I'm going to interpret some of the coefficients of interest as well as test my model on newer data from after 2022.
+
+```{r}
+mod_best_df <- as.data.frame(as.matrix(lasso_1se_coefs)) %>% 
+  filter(s0 != 0)
+mod_best_df
+```
+
+There are 38 coefficients in the LASSO Logistic Regression model with $\lambda = \bar{\lambda}$
+
+**Intercept:** $\text{log}(\hat{Violent}) = -6.653$, exp(-6.653) = 0.00129
+
+-   The odds that a political extremist will participate in, or commit an act of political violence is 0.00129, holding all numeric explanatory variables at 0 and all categorical explanatory variables at their baseline category.
+
+$\beta_{22} RadicalBehaviors ViolentPlot = 3.281$, exp(3.281) = 26.6:
+
+-   The odds that an extremist will participate in or commit an act of political violence are 26.6 times higher for an extremist who creates or contributes to a violent compared to an extremist who simply associates with radicals, holding all other variables constant.
+
+This variable deserves some discussion. At first when I saw this variable and interpreted it, I was worried that it should have been removed originally when I removed the variables related to plots. I looked at the original PIRUS dataset, and saw that all of the violent plot variables I removed were perfectly indicative of a political extremist committing an act of violence. Radical Behaviors Violent Plot, however, is not. Roughly one third of the extremists who did commit an act of political violence observed in this dataset did not plot or contribute to a violent plot, and there are a small amount (roughly 3%) of the non-violent extremists who did plot or contribute to a violent plot, but never actually committed or participated in an act of political violence. In further research, I could toy around with removing it or filtering out the observations where Radical Behaviors is equal to Violent Plot, but for now, I think I should keep it in.
+
+$\beta_{26} SexMale = 0.1196$, exp(0.1196) = 1.126:
+
+-   The odds that an extremist will participate in or commit an act of political violence are 1.126 times higher for a male extremist than a female extremist, holding all other variables constant.
+
+I will now test my model using Tyler Robinson, the man who assassinated Charlie Kirk in October of 2025, and
