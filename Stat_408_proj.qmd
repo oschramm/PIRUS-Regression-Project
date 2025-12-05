@@ -4,11 +4,7 @@ format: html
 editor: visual
 ---
 
-# Predicting Political Violence in the United States
-
-# Introduction
-
-For this project, I wanted to build a logistic regression model that could predict whether or not a Far-Left, Far-Right, or Single–Issue radicalized individual in the United States would participate in or commit an act of political violence. The dataset that I used to train this model is the Profiles of Individuals Radicalized in the United States (PIRUS) dataset from the University of Maryland's National Consortium for the Study of Terrorism and Responses to Terrorism (START). This dataset contains information about extremist plots, activities, radicalization sequences and details, demographics, and social network nodes. The original dataset has 3,526 observations which span from 1940-2022. Each observation is deidentified, but several notable domestic terrorist attacks, such as the Oklahoma City Bombing in 1994, the Charleston Church shooting in 2015, the El Paso Walmart shooting in 2019, and the Buffalo Grocery Store shooting in 2022. What is notably excluded from PIRUS is the January 6th Insurrection at the United States Capitol Building in 2021, which was excluded because of the high number of perpetrators (\~1000), which would drastically influence any models or research on this dataset. I chose to do this project because of it's relevance to the current political climate in the United States. Extremism influenced by political leaning has seen a rise in the 21st Century, and violent acts motivated by these extreme beliefs have also seen a rise. The publicity of this extremism has also increased, with media outlets and politicians spinning extremist activities every which way in order to fit their narrative. My hope is that the predictive models I have built can cut through these narratives and deliver real, unbiased insights into what pushes political extremists to the violent edge.
+# Predicting Political Violence in the United States Code
 
 ```{r}
 library(tidyverse)
@@ -210,8 +206,6 @@ mod_max_coefs
 
 AUC = 0.8586 \~ 85.9%, Train Accuracy = 0.8949 \~ 89.5%, Test Accuracy = 0.7944 \~ 79.4%
 
-There are 342 defined coefficients in the unpenalized logistic regression model. Something notable about this model's summary is that there are 24 coefficients that were not defined because of singularities, or perfect multicollinearity with other variables. I could run a stepwise variable selection process on this model, but I think implementing regularization techniques like LASSO and Elastic Net will be effective in the same way. There are also some coefficients in this model that seem nonsensical to interpret, like $\beta_{62} SocialMediaPlatform Reddit = 15.239$, which is interpreted as: For a extremist who was radicalized or mobilized on Reddit, the expected odds of them participating in or committing an act of political violence increases by a factor of exp(15.239), or 4,151,582 compared to an extremist who was radicalized or mobilized on blogging sites, holding all other variables constant. Ridge regression can help shrink coefficients like this, so I'm going to build models for all three.
-
 ## Building LASSO Regression Models with K-Fold Cross Validation
 
 ```{r}
@@ -340,7 +334,7 @@ enet_min_coefs <- coef(enet_min_mod)
 enet_1se_coefs <- coef(enet_1se_mod)
 ```
 
-Generating my predictions for
+Generating my predictions for the elastic net models, starting with the lambda min model
 
 ```{r}
 # Train
@@ -385,7 +379,7 @@ The AUC of this model is 0.927 \~ 92.7%, the train accuracy is 0.8504 \~ 85%, an
 ## Model Diagnostic Results Table
 
 | Model | \# of Coefficients | AUC | Train Accuracy | Test Accuracy | Accuracy Difference |
-|-------------------------|-------------|--------------|---------------|--------------|---------------|
+|-------------|------------|------------|------------|------------|---------------|
 | Unpenalized Logistic Regression | 342 (24 undef.) | *0.8586 (85.9%)* | **0.8949 (89.5%)** | *0.7944 (79.4%)* | *-0.1005 (10.1%)* |
 | LASSO Logistic Regression ($\lambda = \hat{\lambda}$) | 85 | 0.9242 (92.4%) | 0.8625 (86.3%) | 0.8481 (84.8%) | -0.0144 (1.4%) |
 | LASSO Logistic Regression ($\lambda = \bar{\lambda}$) | 38 | **0.9305 (93.1%)** | 0.8421 (84.2%) | **0.8574 (85.7%)** | **+0.0153 (+1.5%)** |
@@ -396,9 +390,7 @@ The AUC of this model is 0.927 \~ 92.7%, the train accuracy is 0.8504 \~ 85%, an
 
 : **Highest is bold**, *lowest is italicized*
 
-## Testing My Best Model on Violent Extremists Exposed After 2022
-
-Now that I have my best model, I'm going to interpret some of the coefficients of interest as well as test my model on newer data from after 2022.
+## Interpretations from my Best Model
 
 ```{r}
 mod_best_df <- as.data.frame(as.matrix(lasso_1se_coefs)) %>% 
@@ -410,7 +402,7 @@ There are 38 coefficients in the LASSO Logistic Regression model with $\lambda =
 
 **Intercept:** $\text{log}(\hat{Violent}) = -6.653$, exp(-6.653) = 0.00129
 
--   The odds that a political extremist will participate in, or commit an act of political violence is 0.00129, holding all numeric explanatory variables at 0 and all categorical explanatory variables at their baseline category.
+-   The odds that a political extremist will participate in, or commit an act of political violence are 0.00129, holding all numeric explanatory variables at 0 and all categorical explanatory variables at their baseline category.
 
 $\beta_{22} RadicalBehaviors ViolentPlot = 3.281$, exp(3.281) = 26.6:
 
@@ -422,4 +414,4 @@ $\beta_{26} SexMale = 0.1196$, exp(0.1196) = 1.126:
 
 -   The odds that an extremist will participate in or commit an act of political violence are 1.126 times higher for a male extremist than a female extremist, holding all other variables constant.
 
-I will now test my model using Tyler Robinson, the man who assassinated Charlie Kirk in October of 2025, and
+Unfortunately, due to the way my models were trained, I cannot run the glmnet predict function on new data that doesn't hold values for all 365 explanatory variables in my train data. However, hopefully as new data is added to the PIRUS dataset, I will be able to run my models again and see similar results as to what I got during this project. All of my models, with the exception of the unpenalized logistic regression model, performed exceptionally well on the test dataset, so I have reason to believe that as new data is added, I will see similar results. Being able to have a handful of models with AUC probabilities of greater than 90% demonstrates the predictive power that can be derived from implementing regularization techniques.
