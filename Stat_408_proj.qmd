@@ -379,7 +379,7 @@ The AUC of this model is 0.927 \~ 92.7%, the train accuracy is 0.8504 \~ 85%, an
 ## Model Diagnostic Results Table
 
 | Model | \# of Coefficients | AUC | Train Accuracy | Test Accuracy | Accuracy Difference |
-|-------------|------------|------------|------------|------------|---------------|
+|----|----|----|----|----|----|
 | Unpenalized Logistic Regression | 342 (24 undef.) | *0.8586 (85.9%)* | **0.8949 (89.5%)** | *0.7944 (79.4%)* | *-0.1005 (10.1%)* |
 | LASSO Logistic Regression ($\lambda = \hat{\lambda}$) | 85 | 0.9242 (92.4%) | 0.8625 (86.3%) | 0.8481 (84.8%) | -0.0144 (1.4%) |
 | LASSO Logistic Regression ($\lambda = \bar{\lambda}$) | 38 | **0.9305 (93.1%)** | 0.8421 (84.2%) | **0.8574 (85.7%)** | **+0.0153 (+1.5%)** |
