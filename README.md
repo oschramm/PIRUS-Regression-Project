@@ -5,5 +5,5 @@ This repository stores all of the files related to a series of logistic regressi
 The goal of this project is to use the PIRUS dataset to train a logistic regression model predicting whether or not a Right-Wing, Left-Wing, or Single-Issue Extremist will participate in or commit an act of political violence.
 
 Daa Citation:
-National Consortium for the Study of Terrorism and Responses to Terrorism (START). (2023). Profiles of Individual Radicalization in the United States [Data file]. Retrieved from (http://www.start.umd.edu/pirus)
+National Consortium for the Study of Terrorism and Responses to Terrorism (START). (2023). Profiles of Individual Radicalization in the United States. Retrieved from (http://www.start.umd.edu/pirus)
 
